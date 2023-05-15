@@ -1,5 +1,6 @@
 package com.example.hottea.ui.theme
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 val Purple80 = Color(0xFFD0BCFF)
@@ -17,4 +18,12 @@ val Blue = Color(0xFF5483FE)
 val Red = Color(0xFFEF4B52)
 val Green = Color(0xFF17AFA7)
 val Yellow = Color(0xFFEAD078)
+
+val gradient = Brush.verticalGradient(
+    0.0f to PrimaryLight,
+    1.0f to Primary,
+    startY = -1000.0f,
+    endY = 1000.0f
+)
+
 
