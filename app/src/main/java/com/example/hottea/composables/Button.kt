@@ -1,4 +1,4 @@
-package com.example.hottea.composable
+package com.example.hottea.composables
 
 import android.util.Log
 import androidx.compose.foundation.Image

@@ -36,9 +36,9 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.hottea.composable.GoogleButton
-import com.example.hottea.composable.Input
-import com.example.hottea.composable.PrimaryButton
+import com.example.hottea.composables.GoogleButton
+import com.example.hottea.composables.Input
+import com.example.hottea.composables.PrimaryButton
 import com.example.hottea.R
 import com.example.hottea.ui.theme.Blue
 import com.example.hottea.ui.theme.Green

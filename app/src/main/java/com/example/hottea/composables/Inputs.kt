@@ -1,4 +1,4 @@
-package com.example.hottea.composable
+package com.example.hottea.composables
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.text.KeyboardOptions

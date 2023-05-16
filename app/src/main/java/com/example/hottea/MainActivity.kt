@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.example.hottea.screens.ChatsScreen
+import com.example.hottea.screens.HomeScreen
 import com.example.hottea.screens.LoginScreen
 import com.example.hottea.screens.RegisterScreen
 import com.example.hottea.ui.theme.HotTeaTheme
@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                   ChatsScreen()
+                   HomeScreen()
                 }
             }
         }
