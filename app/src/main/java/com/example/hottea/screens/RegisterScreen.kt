@@ -48,7 +48,7 @@ import com.example.hottea.ui.theme.gradient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(modifier: Modifier = Modifier){
+fun RegisterScreen(modifier: Modifier = Modifier, navigatetoLogin: () -> Unit){
 
     var name by remember {
         mutableStateOf("")
@@ -74,12 +74,12 @@ fun RegisterScreen(modifier: Modifier = Modifier){
         .fillMaxSize()
         .background(
             gradient
-        ), horizontalAlignment = Alignment.CenterHorizontally) {
+        ), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
 
         Column(modifier = Modifier
             .fillMaxSize()
             .padding(30.dp, 10.dp, 30.dp, 0.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-                Image(painter = painterResource(id = R.drawable.logo), contentDescription = "Hot Tea Logo", contentScale = ContentScale.Fit, modifier = Modifier.size(80.dp) )
+            Image(painter = painterResource(id = R.drawable.logo), contentDescription = "Hot Tea Logo", contentScale = ContentScale.Fit, modifier = Modifier.size(120.dp) )
 
                 Spacer(modifier = Modifier.size(10.dp))
 
@@ -155,7 +155,7 @@ fun RegisterScreen(modifier: Modifier = Modifier){
             Column(modifier = Modifier, verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally) {
                 Text(text ="Already have an account?" , modifier = Modifier.padding(13.dp, 0.dp), color = Color.White, fontSize= 12.sp)
-                TextButton(onClick = { /*TODO*/ }) {
+                TextButton(onClick = {navigatetoLogin.invoke()}) {
                     Text(text = "Log in")
                 }
             }
@@ -166,6 +166,6 @@ fun RegisterScreen(modifier: Modifier = Modifier){
 @Composable
 fun PreviewRegisterScreen(){
     HotTeaTheme {
-        RegisterScreen()
+        RegisterScreen(navigatetoLogin = {})
     }
 }

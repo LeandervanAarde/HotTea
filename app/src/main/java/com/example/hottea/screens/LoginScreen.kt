@@ -49,7 +49,7 @@ import com.example.hottea.ui.theme.gradient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen (modifier: Modifier = Modifier){
+fun LoginScreen (modifier: Modifier = Modifier, navigateToRegister: () -> Unit){
 
 
     var username by remember {
@@ -120,7 +120,7 @@ fun LoginScreen (modifier: Modifier = Modifier){
 
             Column(modifier = Modifier, verticalArrangement = Arrangement.Center) {
                 Text(text = "New To Hot Tea?", modifier = Modifier.padding(13.dp, 0.dp), color = Color.White, fontSize= 12.sp)
-                TextButton(onClick = { /*TODO*/ }) {
+                TextButton(onClick = {navigateToRegister.invoke()}) {
                     Text(text = "Register account")
                 }
             }
@@ -131,6 +131,6 @@ fun LoginScreen (modifier: Modifier = Modifier){
 @Composable
 fun PreviewLoginScreen(){
     HotTeaTheme {
-        LoginScreen()
+        LoginScreen(navigateToRegister = {})
     }
 }
