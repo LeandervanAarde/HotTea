@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "942112592714",
+    "project_id": "hottea-44cd0",
+    "storage_bucket": "hottea-44cd0.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:942112592714:android:0752d2ae068d0c184c67b3",
+        "android_client_info": {
+          "package_name": "com.example.hottea"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "942112592714-2frbm36dtk2bq99nskkvifflupqg5b8u.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2bp57qVopVESzm9cQSZ0451YsRHpF510"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "942112592714-2frbm36dtk2bq99nskkvifflupqg5b8u.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
