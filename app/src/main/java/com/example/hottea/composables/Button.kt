@@ -22,8 +22,8 @@ import androidx.compose.ui.unit.sp
 
 
 @Composable
-fun PrimaryButton(color: Color, icon: ImageVector, text: String){
-    Button(onClick = { Log.i("hello", "Hey there!")}, modifier = Modifier.height(40.dp), colors = ButtonDefaults.buttonColors(
+fun PrimaryButton(color: Color, icon: ImageVector, text: String, onClick: () -> Unit ){
+    Button(onClick = onClick, modifier = Modifier.height(40.dp), colors = ButtonDefaults.buttonColors(
         color
     )) {
         Icon(imageVector = icon, contentDescription = null )
@@ -34,7 +34,7 @@ fun PrimaryButton(color: Color, icon: ImageVector, text: String){
 
 @Composable
 fun GoogleButton(color: Color, image: Int, text: String){
-    Button(onClick = { /*TODO*/ }, modifier = Modifier.height(40.dp), colors = ButtonDefaults.buttonColors(
+    Button(onClick = { Log.i("Hey", "HEY POES") }, modifier = Modifier.height(40.dp), colors = ButtonDefaults.buttonColors(
         color
     )) {
         Image(painter = painterResource(id = image), contentDescription = null, contentScale = ContentScale.Fit, modifier = Modifier.size(20.dp) )

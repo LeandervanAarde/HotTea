@@ -26,3 +26,4 @@ fun Input(modifier: Modifier = Modifier, textValue: String, changedVal: (String)
         visualTransformation = transformation
     )
 }
+

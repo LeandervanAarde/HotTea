@@ -1,6 +1,7 @@
 package com.example.hottea.screens
 
 import android.R.color
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +33,7 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.example.hottea.composables.ConverSationItem
 import com.example.hottea.composables.PrimaryButton
 import com.example.hottea.composables.ProfileHeader
@@ -64,9 +66,9 @@ fun HomeScreen(modifier: Modifier = Modifier){
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp, 0.dp, 12.dp, 0.dp), horizontalArrangement = Arrangement.End) {
-                PrimaryButton(color = Blue, icon = Icons.Default.Person , text = "Profile" )
+                PrimaryButton(color = Blue, icon = Icons.Default.Person , text = "Profile" , onClick = { Log.i("ehye", "null")})
                 Spacer(modifier = Modifier.size(12.dp))
-                PrimaryButton(color = Red, icon = Icons.Default.ExitToApp , text = "LogOut" )
+                PrimaryButton(color = Red, icon = Icons.Default.ExitToApp , text = "LogOut" ,onClick = { Log.i("ehye", "null")} )
             }
         }
         Spacer(modifier = Modifier.size(12.dp))
@@ -93,16 +95,24 @@ fun HomeScreen(modifier: Modifier = Modifier){
                 ConverSationItem()
                 ConverSationItem()
                 ConverSationItem()
+
+                ConverSationItem()
+                ConverSationItem()
+                ConverSationItem()
+                ConverSationItem()
+                ConverSationItem()
+                ConverSationItem()
+                ConverSationItem()
             }
         }
     }
 }
 
 
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewHome(){
-    HotTeaTheme {
-        HomeScreen()
-    }
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun PreviewHome(){
+//    HotTeaTheme {
+//        HomeScreen(navController = NavController)
+//    }
+//}

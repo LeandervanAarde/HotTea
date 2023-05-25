@@ -1,10 +1,14 @@
 package com.example.hottea
 
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.hottea.models.AuthViewModel
+import com.example.hottea.screens.HomeScreen
 import com.example.hottea.screens.LoginScreen
 import com.example.hottea.screens.RegisterScreen
 
@@ -13,16 +17,29 @@ enum class AuthenticationRoutes {
     Register
 }
 
+enum class AppRoutes {
+    Home,
+    Profile,
+    Chat
+}
 @Composable
-fun Navigation(navController: NavHostController = rememberNavController()){
+fun Navigation(navController: NavHostController = rememberNavController(), authViewModel: AuthViewModel){
     NavHost(navController = navController, startDestination = AuthenticationRoutes.Login.name){
         composable(route = AuthenticationRoutes.Login.name){
-            LoginScreen(navigateToRegister = {navController.navigate(AuthenticationRoutes.Register.name){
+            LoginScreen(
+                navigateToRegister = {navController.navigate(AuthenticationRoutes.Register.name){
                 launchSingleTop = true
                 popUpTo(route = AuthenticationRoutes.Login.name){
                     inclusive = true
                 }
-            }})
+            } },
+
+                authViewModel = AuthViewModel()
+            )
+        }
+
+        composable(route = AppRoutes.Home.name){
+            HomeScreen()
         }
 
         composable(route = AuthenticationRoutes.Register.name){
@@ -31,7 +48,30 @@ fun Navigation(navController: NavHostController = rememberNavController()){
                 popUpTo(AuthenticationRoutes.Login.name){
                     inclusive = true
                 }
-            } })
+            } }, authViewModel = AuthViewModel() )
         }
     }
 }
+
+//navigateToHome = {navController.navigate(AppRoutes.Home.name)}
+//composable(route = AuthenticationRoutes.Login.name) {
+//    LoginScreen(
+//        navigateToRegister = {
+//            navController.navigate(AuthenticationRoutes.Register.name) {
+//                launchSingleTop = true
+//                popUpTo(route = AuthenticationRoutes.Login.name) {
+//                    inclusive = true
+//                }
+//            }
+//        },
+//        navigateToHome = {
+//            navController.navigate(AppRoutes.Home.name) {
+//                launchSingleTop = true
+//                popUpTo(AuthenticationRoutes.Login.name) {
+//                    inclusive = true
+//                }
+//            }
+//        },
+//        authViewModel = AuthViewModel()
+//    )
+//}

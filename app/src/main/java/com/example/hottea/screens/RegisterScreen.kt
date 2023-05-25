@@ -1,5 +1,6 @@
 package com.example.hottea.screens
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -35,6 +36,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
@@ -42,33 +44,18 @@ import androidx.compose.ui.unit.sp
 import com.example.hottea.composables.GoogleButton
 import com.example.hottea.composables.Input
 import com.example.hottea.composables.PrimaryButton
+import com.example.hottea.models.AuthViewModel
 import com.example.hottea.ui.theme.Blue
 import com.example.hottea.ui.theme.Green
 import com.example.hottea.ui.theme.gradient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(modifier: Modifier = Modifier, navigatetoLogin: () -> Unit){
+fun RegisterScreen(authViewModel: AuthViewModel, modifier: Modifier = Modifier, navigatetoLogin: () -> Unit){
 
-    var name by remember {
-        mutableStateOf("")
-    }
-
-    var email by remember {
-        mutableStateOf("")
-    }
-
-    var username by remember {
-        mutableStateOf("")
-    }
-
-    var password by remember {
-        mutableStateOf("")
-    }
-
-    var confirmPassword by remember {
-        mutableStateOf("")
-    }
+    val authUiState = authViewModel?.authUiState
+    val err = authUiState?.errMsg != null
+    val context = LocalContext.current
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -83,9 +70,14 @@ fun RegisterScreen(modifier: Modifier = Modifier, navigatetoLogin: () -> Unit){
 
                 Spacer(modifier = Modifier.size(10.dp))
 
+            if(err){
+                Spacer(modifier = Modifier.size(10.dp))
+                Text(text = "Please ensure that all fields are filled in" , modifier = Modifier.padding(13.dp, 0.dp), color = Color.Red, fontSize= 14.sp)
+                Spacer(modifier = Modifier.size(10.dp))
+            }
             Input(
-                textValue = name,
-                changedVal = { newText -> name = newText },
+                textValue = authUiState?.name ?: "",
+                changedVal = { newText -> authViewModel.handleChange("name", newText)},
                 label ="Name" ,
                 icon = Icons.Default.Person,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text) ,
@@ -96,8 +88,8 @@ fun RegisterScreen(modifier: Modifier = Modifier, navigatetoLogin: () -> Unit){
             Spacer(modifier = Modifier.size(10.dp))
 
             Input(
-                textValue = username,
-                changedVal = { newText -> username = newText },
+                textValue = authUiState?.username ?: "",
+                changedVal = { newText -> authViewModel.handleChange("username", newText)},
                 label ="Username" ,
                 icon = Icons.Default.AccountCircle,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text) ,
@@ -106,8 +98,8 @@ fun RegisterScreen(modifier: Modifier = Modifier, navigatetoLogin: () -> Unit){
             Spacer(modifier = Modifier.size(10.dp))
 
             Input(
-                textValue = email,
-                changedVal = { newText -> email = newText },
+                textValue = authUiState?.email ?: "",
+                changedVal = { newText -> authViewModel.handleChange("email", newText)},
                 label ="Email" ,
                 icon = Icons.Default.Email,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email) ,
@@ -117,8 +109,8 @@ fun RegisterScreen(modifier: Modifier = Modifier, navigatetoLogin: () -> Unit){
             Spacer(modifier = Modifier.size(10.dp))
 
             Input(
-                textValue = password,
-                changedVal = {newText -> password = newText},
+                textValue = authUiState?.password ?: "",
+                changedVal = { newText -> authViewModel.handleChange("password", newText)},
                 label = "Password" ,
                 icon =  Icons.Default.Lock ,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -128,8 +120,8 @@ fun RegisterScreen(modifier: Modifier = Modifier, navigatetoLogin: () -> Unit){
             Spacer(modifier = Modifier.size(10.dp))
 
             Input(
-                textValue = confirmPassword,
-                changedVal = {newText -> confirmPassword = newText},
+                textValue = authUiState?.confirmPassword ?: "",
+                changedVal = { newText -> authViewModel.handleChange("confirmPassword", newText)},
                 label = "Confirm password" ,
                 icon =  Icons.Default.Lock ,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
@@ -137,7 +129,11 @@ fun RegisterScreen(modifier: Modifier = Modifier, navigatetoLogin: () -> Unit){
             )
 
             Spacer(modifier = Modifier.size(30.dp))
-            PrimaryButton(color = Blue, icon = Icons.Default.Lock, text = "Register account" )
+            PrimaryButton(color = Blue, icon = Icons.Default.Lock, text = "Register account" ){
+                authViewModel?.registerUser(context = context)
+            }
+
+
 
             Spacer(modifier = Modifier.size(30.dp))
 
@@ -166,6 +162,6 @@ fun RegisterScreen(modifier: Modifier = Modifier, navigatetoLogin: () -> Unit){
 @Composable
 fun PreviewRegisterScreen(){
     HotTeaTheme {
-        RegisterScreen(navigatetoLogin = {})
+        RegisterScreen(navigatetoLogin = {}, authViewModel = AuthViewModel())
     }
 }
