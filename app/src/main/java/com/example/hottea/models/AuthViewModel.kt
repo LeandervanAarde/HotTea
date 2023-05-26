@@ -12,13 +12,15 @@ import androidx.navigation.NavController
 import com.example.hottea.AppRoutes
 import com.example.hottea.AuthenticationRoutes
 import com.example.hottea.repositories.AuthRepository
+import com.example.hottea.repositories.FirestoreRepository
 import com.example.hottea.screens.HomeScreen
 import kotlinx.coroutines.launch
 
 
 class AuthViewModel (private val authRepository: AuthRepository = AuthRepository()): ViewModel(){
     val currentUser = authRepository.currentUser
-    val hasUser: Boolean = authRepository.hasUser()
+    val hasUser: Boolean
+        get()= authRepository.hasUser()
     var authUiState by mutableStateOf(RegisterUIState())
         private set
     var loginAuthUiState by mutableStateOf(LoginUiState())
@@ -57,10 +59,17 @@ class AuthViewModel (private val authRepository: AuthRepository = AuthRepository
                 authRepository.registerUser(authUiState.email,authUiState.password){
                     userId ->
                     if(userId.isNotBlank()){
-                        Log.d("user:", userId.toString())
-                        Toast.makeText(context, "Registration completed", Toast.LENGTH_SHORT).show()
+                        FirestoreRepository().createUserInDatabase(uid = userId, name = authUiState.name, username = authUiState.username, email = authUiState.email, {
+                            if(it){
+                                authUiState = authUiState.copy(regSucc = true)
+                                Toast.makeText(context, "Registration completed", Toast.LENGTH_SHORT).show()
 
-                        authUiState = authUiState.copy(regSucc = true)
+                            } else {
+                                authUiState = authUiState.copy(regSucc = false)
+                                Toast.makeText(context, "Registration Failed", Toast.LENGTH_SHORT).show()
+
+                            }
+                        })
                     } else {
                         Log.d("Error:", "There was an error")
                         Toast.makeText(context, "Registration failed", Toast.LENGTH_SHORT).show()
@@ -77,7 +86,7 @@ class AuthViewModel (private val authRepository: AuthRepository = AuthRepository
     }
 
 
-    fun signInUser(context: Context, navController: NavController) = viewModelScope.launch {
+    fun signInUser(context: Context) = viewModelScope.launch {
         try {
             if (loginAuthUiState.loginEmail.isBlank() || loginAuthUiState.loginPassword.isBlank()) {
                 loginAuthUiState = loginAuthUiState.copy(err = "Please fill in all the fields")
@@ -88,11 +97,6 @@ class AuthViewModel (private val authRepository: AuthRepository = AuthRepository
                     if (isCompleted) {
                         Toast.makeText(context, "Login Success!", Toast.LENGTH_SHORT).show()
                         loginAuthUiState = loginAuthUiState.copy(logInSucc = true)
-                        navController.navigate(AppRoutes.Home.name) {
-                            popUpTo(AuthenticationRoutes.Login.name) {
-                                inclusive = true
-                            }
-                        }
 
                     } else {
                         Log.d("Error", "There is an error")

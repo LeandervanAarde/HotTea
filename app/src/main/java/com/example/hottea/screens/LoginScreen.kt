@@ -56,7 +56,7 @@ import com.example.hottea.ui.theme.gradient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen (authViewModel: AuthViewModel, modifier: Modifier = Modifier, navigateToRegister: () -> Unit){
+fun LoginScreen (authViewModel: AuthViewModel, modifier: Modifier = Modifier, navigateHome: () -> Unit,  navigateToRegister: () -> Unit){
     val authUiState = authViewModel?.loginAuthUiState
     val error = authUiState?.err != null
     val context = LocalContext.current
@@ -102,7 +102,7 @@ fun LoginScreen (authViewModel: AuthViewModel, modifier: Modifier = Modifier, na
             Spacer(modifier = Modifier.size(30.dp))
 
             PrimaryButton(color = Blue, icon = Icons.Default.Person, text = "Log in") {
-                authViewModel?.signInUser(context, navController)
+                authViewModel?.signInUser(context)
             }
 
             Spacer(modifier = Modifier.size(30.dp))
@@ -131,6 +131,6 @@ fun LoginScreen (authViewModel: AuthViewModel, modifier: Modifier = Modifier, na
 @Composable
 fun PreviewLoginScreen(){
     HotTeaTheme {
-        LoginScreen(navigateToRegister = {} , authViewModel = AuthViewModel())
+        LoginScreen(navigateToRegister = {} , authViewModel = AuthViewModel(), navigateHome = {})
     }
 }

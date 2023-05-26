@@ -140,7 +140,6 @@ fun ProfileScreen(modifier: Modifier = Modifier){
                     Spacer(modifier = Modifier.size(10.dp))
                     Text(text = "Dark", color = Color.Gray, fontSize = 12.sp)
                 }
-
             }
         }
     }

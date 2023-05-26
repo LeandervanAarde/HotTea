@@ -26,6 +26,7 @@ import androidx.compose.material3.TabRow
 import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +39,8 @@ import com.example.hottea.composables.ConverSationItem
 import com.example.hottea.composables.PrimaryButton
 import com.example.hottea.composables.ProfileHeader
 import com.example.hottea.composables.tabRowItems
+import com.example.hottea.models.AuthViewModel
+import com.example.hottea.repositories.AuthRepository
 import com.example.hottea.ui.theme.Blue
 import com.example.hottea.ui.theme.HotTeaTheme
 import com.example.hottea.ui.theme.Primary
@@ -53,10 +56,11 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
 
-fun HomeScreen(modifier: Modifier = Modifier){
+fun HomeScreen(modifier: Modifier = Modifier, authViewModel: AuthViewModel, repository: AuthRepository = AuthRepository()){
 
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
+
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -68,7 +72,7 @@ fun HomeScreen(modifier: Modifier = Modifier){
                 .padding(0.dp, 0.dp, 12.dp, 0.dp), horizontalArrangement = Arrangement.End) {
                 PrimaryButton(color = Blue, icon = Icons.Default.Person , text = "Profile" , onClick = { Log.i("ehye", "null")})
                 Spacer(modifier = Modifier.size(12.dp))
-                PrimaryButton(color = Red, icon = Icons.Default.ExitToApp , text = "LogOut" ,onClick = { Log.i("ehye", "null")} )
+                PrimaryButton(color = Red, icon = Icons.Default.ExitToApp , text = "LogOut" ,onClick = { repository.signOutUser()} )
             }
         }
         Spacer(modifier = Modifier.size(12.dp))

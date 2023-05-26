@@ -23,55 +23,54 @@ enum class AppRoutes {
     Chat
 }
 @Composable
-fun Navigation(navController: NavHostController = rememberNavController(), authViewModel: AuthViewModel){
-    NavHost(navController = navController, startDestination = AuthenticationRoutes.Login.name){
+fun Navigation(navController: NavHostController = rememberNavController(), AuthViewModel: AuthViewModel){
+   val initialRoute =  if(AuthViewModel.hasUser){
+        AppRoutes.Home.name
+    } else {
+        AuthenticationRoutes.Login.name
+    }
+
+    NavHost(navController = navController, startDestination = initialRoute){
         composable(route = AuthenticationRoutes.Login.name){
-            LoginScreen(
-                navigateToRegister = {navController.navigate(AuthenticationRoutes.Register.name){
+    LoginScreen(
+        navigateToRegister = {
+            navController.navigate(AuthenticationRoutes.Register.name) {
                 launchSingleTop = true
-                popUpTo(route = AuthenticationRoutes.Login.name){
+                popUpTo(route = AuthenticationRoutes.Login.name) {
                     inclusive = true
                 }
-            } },
-
-                authViewModel = AuthViewModel()
-            )
+            }
+        },
+        navigateHome = {
+            navController.navigate(AppRoutes.Home.name) {
+                launchSingleTop = true
+                popUpTo(AuthenticationRoutes.Login.name) {
+                    inclusive = true
+                }
+            }
+        },
+        authViewModel = AuthViewModel()
+    )
         }
 
         composable(route = AppRoutes.Home.name){
-            HomeScreen()
+            HomeScreen(authViewModel = AuthViewModel)
         }
 
         composable(route = AuthenticationRoutes.Register.name){
             RegisterScreen(navigatetoLogin = {navController.navigate(AuthenticationRoutes.Login.name){
                 launchSingleTop = true
-                popUpTo(AuthenticationRoutes.Login.name){
+                popUpTo(AuthenticationRoutes.Register.name){
                     inclusive = true
                 }
-            } }, authViewModel = AuthViewModel() )
+            } }, navToHome = {
+                navController.navigate(AppRoutes.Home.name){
+                    launchSingleTop = true
+                    popUpTo(route = AuthenticationRoutes.Register.name){
+                        inclusive = true
+                    }
+                }
+            }, authViewModel = AuthViewModel()  )
         }
     }
 }
-
-//navigateToHome = {navController.navigate(AppRoutes.Home.name)}
-//composable(route = AuthenticationRoutes.Login.name) {
-//    LoginScreen(
-//        navigateToRegister = {
-//            navController.navigate(AuthenticationRoutes.Register.name) {
-//                launchSingleTop = true
-//                popUpTo(route = AuthenticationRoutes.Login.name) {
-//                    inclusive = true
-//                }
-//            }
-//        },
-//        navigateToHome = {
-//            navController.navigate(AppRoutes.Home.name) {
-//                launchSingleTop = true
-//                popUpTo(AuthenticationRoutes.Login.name) {
-//                    inclusive = true
-//                }
-//            }
-//        },
-//        authViewModel = AuthViewModel()
-//    )
-//}

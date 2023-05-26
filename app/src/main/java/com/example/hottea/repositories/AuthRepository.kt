@@ -15,8 +15,8 @@ class AuthRepository {
     fun getUserId(): String = Firebase.auth.currentUser?.uid.orEmpty()
 
     suspend fun registerUser(email: String, password: String, createdUser: (String) -> Unit) = withContext(Dispatchers.IO){
-        Firebase.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener{
-            if(it.isComplete){
+        Firebase.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(){
+            if(it.isSuccessful){
                 Log.d("User is now registered, id:", it.result.user?.uid.toString())
                 it.result.user?.uid?.let {it1 -> createdUser.invoke(it1)}
             } else {
@@ -26,9 +26,9 @@ class AuthRepository {
         }.await()
     }
 
-    suspend fun loginUser (email: String, password: String, isCompleted: (Boolean) -> Unit) = withContext(Dispatchers.IO){
+    suspend fun loginUser (email: String, password: String,  isCompleted: (Boolean) -> Unit) = withContext(Dispatchers.IO){
         Firebase.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
-            if(it.isComplete){
+            if(it.isSuccessful){
                 Log.d("Logged in", true.toString())
             } else{
                 Log.d("Login error", it.exception?.localizedMessage.toString())
@@ -36,9 +36,9 @@ class AuthRepository {
             }
         }.await()
 
-        fun signOutUser(){
-            Firebase.auth.signOut()
-        }
+    }
 
+    fun signOutUser(){
+        Firebase.auth.signOut()
     }
 }

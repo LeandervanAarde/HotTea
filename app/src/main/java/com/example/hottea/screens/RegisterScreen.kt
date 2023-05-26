@@ -23,6 +23,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -51,7 +52,7 @@ import com.example.hottea.ui.theme.gradient
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun RegisterScreen(authViewModel: AuthViewModel, modifier: Modifier = Modifier, navigatetoLogin: () -> Unit){
+fun RegisterScreen(authViewModel: AuthViewModel, modifier: Modifier = Modifier, navigatetoLogin: () -> Unit, navToHome: () -> Unit){
 
     val authUiState = authViewModel?.authUiState
     val err = authUiState?.errMsg != null
@@ -157,11 +158,17 @@ fun RegisterScreen(authViewModel: AuthViewModel, modifier: Modifier = Modifier, 
             }
         }
     }
+
+    LaunchedEffect(key1 = authViewModel?.hasUser){
+        if(authViewModel?.hasUser == true){
+            navToHome.invoke()
+        }
+    }
 }
 @Preview(showSystemUi = true)
 @Composable
 fun PreviewRegisterScreen(){
     HotTeaTheme {
-        RegisterScreen(navigatetoLogin = {}, authViewModel = AuthViewModel())
+        RegisterScreen(navigatetoLogin = {}, authViewModel = AuthViewModel(), navToHome = {})
     }
 }
