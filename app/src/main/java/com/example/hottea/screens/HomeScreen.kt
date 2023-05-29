@@ -1,6 +1,7 @@
 package com.example.hottea.screens
 
 import android.R.color
+import android.security.identity.AccessControlProfile
 import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -56,7 +57,7 @@ import kotlinx.coroutines.launch
 @OptIn(ExperimentalFoundationApi::class, ExperimentalPagerApi::class)
 @Composable
 
-fun HomeScreen(modifier: Modifier = Modifier, authViewModel: AuthViewModel, repository: AuthRepository = AuthRepository()){
+fun HomeScreen(modifier: Modifier = Modifier, authViewModel: AuthViewModel, repository: AuthRepository = AuthRepository(), navToProfile: () -> Unit){
 
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
@@ -70,7 +71,7 @@ fun HomeScreen(modifier: Modifier = Modifier, authViewModel: AuthViewModel, repo
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp, 0.dp, 12.dp, 0.dp), horizontalArrangement = Arrangement.End) {
-                PrimaryButton(color = Blue, icon = Icons.Default.Person , text = "Profile" , onClick = { Log.i("ehye", "null")})
+                PrimaryButton(color = Blue, icon = Icons.Default.Person , text = "Profile" , onClick = {navToProfile.invoke()})
                 Spacer(modifier = Modifier.size(12.dp))
                 PrimaryButton(color = Red, icon = Icons.Default.ExitToApp , text = "LogOut" ,onClick = { repository.signOutUser()} )
             }

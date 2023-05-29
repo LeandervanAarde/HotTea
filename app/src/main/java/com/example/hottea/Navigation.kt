@@ -10,6 +10,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.hottea.models.AuthViewModel
 import com.example.hottea.screens.HomeScreen
 import com.example.hottea.screens.LoginScreen
+import com.example.hottea.screens.ProfileScreen
 import com.example.hottea.screens.RegisterScreen
 
 enum class AuthenticationRoutes {
@@ -54,7 +55,16 @@ fun Navigation(navController: NavHostController = rememberNavController(), AuthV
         }
 
         composable(route = AppRoutes.Home.name){
-            HomeScreen(authViewModel = AuthViewModel)
+            HomeScreen(authViewModel = AuthViewModel, navToProfile = {navController.navigate(AppRoutes.Profile.name){
+                launchSingleTop = true
+                popUpTo(AppRoutes.Home.name){
+                    inclusive = true
+                }
+            }})
+        }
+
+        composable(route = AppRoutes.Profile.name){
+            ProfileScreen()
         }
 
         composable(route = AuthenticationRoutes.Register.name){

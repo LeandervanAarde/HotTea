@@ -22,6 +22,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -126,6 +127,12 @@ fun LoginScreen (authViewModel: AuthViewModel, modifier: Modifier = Modifier, na
             }
         }
     }
+    LaunchedEffect(key1 = authViewModel?.hasUser){
+        if(authViewModel?.hasUser == true){
+            navigateHome.invoke()
+        }
+    }
+
 }
 @Preview(showSystemUi = true)
 @Composable
