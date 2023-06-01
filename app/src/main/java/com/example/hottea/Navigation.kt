@@ -8,6 +8,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.hottea.models.AuthViewModel
+import com.example.hottea.screens.ChatScreen
 import com.example.hottea.screens.HomeScreen
 import com.example.hottea.screens.LoginScreen
 import com.example.hottea.screens.ProfileScreen
@@ -60,7 +61,19 @@ fun Navigation(navController: NavHostController = rememberNavController(), AuthV
                 popUpTo(AppRoutes.Home.name){
                     inclusive = true
                 }
-            }})
+            }},
+             navToConversation = {navController.navigate(AppRoutes.Chat.name){
+                    launchSingleTop = true
+                    popUpTo(AppRoutes.Home.name){
+                        inclusive = true
+                    }
+                } }
+
+            )
+        }
+
+        composable(route = AppRoutes.Chat.name){
+            ChatScreen()
         }
 
         composable(route = AppRoutes.Profile.name){
@@ -82,5 +95,7 @@ fun Navigation(navController: NavHostController = rememberNavController(), AuthV
                 }
             }, authViewModel = AuthViewModel()  )
         }
+
+
     }
 }

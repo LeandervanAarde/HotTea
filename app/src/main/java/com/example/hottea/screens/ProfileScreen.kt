@@ -164,7 +164,11 @@ fun ProfileScreen(modifier: Modifier = Modifier, authRepository: AuthRepository 
                         icon = if (mode == "light") ImageVector.vectorResource(id = R.drawable.ic_dark )  else ImageVector.vectorResource(id = R.drawable.ic_sunny ),
                         text = if (mode == "light") "Switch to dark mode" else "Switch to light mode"
                     ) {
-                        Log.i("THEME", mode)
+                        if(mode == "light"){
+                            mode = "dark"
+                        } else{
+                            mode = "light"
+                        }
                     }
                 }
             }

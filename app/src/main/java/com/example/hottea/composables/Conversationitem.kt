@@ -3,6 +3,7 @@ package com.example.hottea.composables
 import android.provider.CalendarContract.Colors
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,6 +16,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -27,24 +31,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hottea.R
+import com.example.hottea.models.TopNavItem
 import com.example.hottea.ui.theme.Blue
 
 import com.example.hottea.ui.theme.HotTeaTheme
 import com.example.hottea.ui.theme.Primary
 import com.example.hottea.ui.theme.PrimaryLight
+import com.example.hottea.ui.theme.gradient
 
 @Composable
-fun ConverSationItem(modifier: Modifier= Modifier){
+fun ConverSationItem(modifier: Modifier= Modifier, navigate: () -> Unit){
     Column(
         modifier
             .fillMaxWidth()
             .padding(10.dp, 5.dp)
+            .clickable{navigate}
             .background(Primary, shape = RoundedCornerShape(20.dp))
             .height(80.dp)) {
        Row(
            modifier
                .fillMaxWidth()
                .fillMaxHeight()
+               .clickable{navigate()}
                .padding(10.dp)
                .background(color = Primary), verticalAlignment = Alignment.CenterVertically) {
           Column(
@@ -104,6 +112,6 @@ fun ConverSationItem(modifier: Modifier= Modifier){
 @Composable
 fun PreviewLoginScreen(){
     HotTeaTheme {
-        ConverSationItem()
+        ConverSationItem(navigate = {})
     }
 }

@@ -27,12 +27,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.hottea.R
 import com.example.hottea.ui.theme.Blue
+import com.example.hottea.ui.theme.PrimaryLight
 
 @Composable
 fun ProfileHeader(){
     Row(modifier = Modifier
         .fillMaxWidth()
-        .padding(10.dp)) {
+        .padding(10.dp)){
 
         Column(modifier = Modifier
             .size(120.dp)
