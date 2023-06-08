@@ -66,7 +66,7 @@ fun FriendCard(modifier: Modifier = Modifier){
                 modifier
                     .fillMaxWidth()
                     .padding(0.dp, 3.dp), horizontalArrangement = Arrangement.Center) {
-                PrimaryButton(color = Blue, icon = ImageVector.vectorResource(id = R.drawable.ic_chat), text = "Start Chatting" ) {
+                PrimaryButton(color = Blue, icon = ImageVector.vectorResource(id = R.drawable.ic_chat), text = "new Chat" ) {
 
                 }
             }

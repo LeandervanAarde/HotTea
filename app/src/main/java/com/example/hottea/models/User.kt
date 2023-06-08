@@ -6,5 +6,7 @@ data class User(
     val username: String = "",
     val email: String = "",
     val profileImage: String = "",
-    val status: String = ""
+    val status: String = "",
+    val friends: List<String> = emptyList(),
+    val chats: List<String> = emptyList()
 )

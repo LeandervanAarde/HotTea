@@ -30,7 +30,7 @@ import com.example.hottea.ui.theme.Blue
 import com.example.hottea.ui.theme.PrimaryLight
 
 @Composable
-fun ProfileHeader(){
+fun ProfileHeader(status: String, name: String){
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(10.dp)){
@@ -50,7 +50,7 @@ fun ProfileHeader(){
             Row(modifier = Modifier.padding(12.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 Image(painter = painterResource(id = R.drawable.logo), contentDescription = null, contentScale = ContentScale.Fit, modifier = Modifier.size(30.dp) )
                 Spacer(modifier = Modifier.size(12.dp))
-                Text(text = "Leander van Aarde",   color = Color.White, fontSize= 18.sp, fontWeight = FontWeight.Medium)
+                Text(text = name,   color = Color.White, fontSize= 18.sp, fontWeight = FontWeight.Medium)
             }
 
             Row(modifier = Modifier.padding(20.dp, 0.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
@@ -67,7 +67,7 @@ fun ProfileHeader(){
             Row(modifier = Modifier.padding(12.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 Image(imageVector = Icons.Default.Edit , contentDescription = null, modifier = Modifier.size(25.dp), colorFilter = ColorFilter.tint(Color.White) )
                 Spacer(modifier = Modifier.size(12.dp))
-                Text(text = "I just like to eat cheese...",   color = Color.Gray, fontSize= 12.sp)
+                Text(text = status,   color = Color.Gray, fontSize= 12.sp)
             }
 //            Row(modifier = Modifier
 //                .fillMaxWidth()

@@ -44,15 +44,15 @@ fun ConverSationItem(modifier: Modifier= Modifier, navigate: () -> Unit){
     Column(
         modifier
             .fillMaxWidth()
-            .padding(10.dp, 5.dp)
-            .clickable{navigate}
+            .padding(10.dp, 7.dp)
+            .clickable { navigate }
             .background(Primary, shape = RoundedCornerShape(20.dp))
-            .height(80.dp)) {
+            .height(88.dp)) {
        Row(
            modifier
                .fillMaxWidth()
                .fillMaxHeight()
-               .clickable{navigate()}
+               .clickable { navigate() }
                .padding(10.dp)
                .background(color = Primary), verticalAlignment = Alignment.CenterVertically) {
           Column(
@@ -65,6 +65,8 @@ fun ConverSationItem(modifier: Modifier= Modifier, navigate: () -> Unit){
                       .clip(shape = RoundedCornerShape(15.dp))
                       .height(70.dp))
           }
+           
+           Spacer(modifier = modifier.size(6.dp))
 
            Column(
                modifier
@@ -97,7 +99,11 @@ fun ConverSationItem(modifier: Modifier= Modifier, navigate: () -> Unit){
                    .fillMaxHeight()
                    .padding(5.dp), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally) {
 
-                Column(modifier.width(20.dp).height(20.dp).background(Blue, shape = CircleShape), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    modifier
+                        .width(20.dp)
+                        .height(20.dp)
+                        .background(Blue, shape = CircleShape), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(text = "10", fontSize = 9.sp, color = Color.White)
                 }
 //               Spacer(modifier = Modifier.size(12.dp))

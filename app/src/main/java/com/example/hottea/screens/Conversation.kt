@@ -52,7 +52,7 @@ import com.example.hottea.ui.theme.PrimaryLight
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(modifier: Modifier = Modifier){
+fun ChatScreen(modifier: Modifier = Modifier, navBack: () -> Unit){
     var message by remember {
         mutableStateOf("")
     }
@@ -105,7 +105,7 @@ fun ChatScreen(modifier: Modifier = Modifier){
         }
 
         Spacer(modifier = modifier.size(5.dp))
-        TextButton(onClick = { /*TODO*/ }) {
+        TextButton(onClick = { navBack.invoke() }) {
             Icon(imageVector = Icons.Default.ArrowBack, contentDescription = null)
             Text(text = "Back")
         }
@@ -124,7 +124,7 @@ fun ChatScreen(modifier: Modifier = Modifier){
 
             Row(modifier.padding(12.dp, 0.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
                 OutlinedTextField(
-                    modifier = Modifier.width(266.dp),
+                    modifier = Modifier.width(260.dp),
                     textStyle = TextStyle(color = Color.White),
                     value = message ,
                     onValueChange = { message = it },

@@ -1,8 +1,6 @@
 package com.example.hottea
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -56,28 +54,39 @@ fun Navigation(navController: NavHostController = rememberNavController(), AuthV
         }
 
         composable(route = AppRoutes.Home.name){
-            HomeScreen(authViewModel = AuthViewModel, navToProfile = {navController.navigate(AppRoutes.Profile.name){
-                launchSingleTop = true
-                popUpTo(AppRoutes.Home.name){
-                    inclusive = true
-                }
-            }},
-             navToConversation = {navController.navigate(AppRoutes.Chat.name){
+            HomeScreen(
+                authViewModel = AuthViewModel,
+                navToProfile = {navController.navigate(AppRoutes.Profile.name){
                     launchSingleTop = true
                     popUpTo(AppRoutes.Home.name){
                         inclusive = true
                     }
-                } }
-
+                }},
+                navToConversation = {navController.navigate(AppRoutes.Chat.name){
+                       launchSingleTop = true
+                       popUpTo(AppRoutes.Home.name){
+                           inclusive = true
+                       }
+                   } },
             )
         }
 
         composable(route = AppRoutes.Chat.name){
-            ChatScreen()
+            ChatScreen(navBack = {navController.navigate(AppRoutes.Home.name){
+                launchSingleTop = true
+                popUpTo(AppRoutes.Chat.name){
+                    inclusive = true
+                }
+            } })
         }
 
         composable(route = AppRoutes.Profile.name){
-            ProfileScreen()
+            ProfileScreen(navBack = {navController.navigate(AppRoutes.Home.name){
+                launchSingleTop = true
+                popUpTo(AppRoutes.Profile.name){
+                    inclusive = true
+                }
+            } })
         }
 
         composable(route = AuthenticationRoutes.Register.name){

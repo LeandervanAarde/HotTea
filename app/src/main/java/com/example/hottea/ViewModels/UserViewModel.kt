@@ -22,7 +22,7 @@ class UserViewModel(private val firestoreRepository: FirestoreRepository = Fires
         if (!isInitialized) {
             getUserInformation()
             isInitialized = true
-            Log.d("FUCK SAKES", "AGAIN AND AGAIN")
+            Log.d("FUCK SAKES", PROFILEDATA.value.toString())
         }
     }
 

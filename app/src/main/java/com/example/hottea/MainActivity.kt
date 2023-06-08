@@ -1,6 +1,7 @@
 package com.example.hottea
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
@@ -16,6 +17,8 @@ import com.example.hottea.screens.HomeScreen
 import com.example.hottea.screens.LoginScreen
 import com.example.hottea.screens.RegisterScreen
 import com.example.hottea.ui.theme.HotTeaTheme
+import com.google.firebase.FirebaseApp
+import com.google.firebase.storage.FirebaseStorage
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
