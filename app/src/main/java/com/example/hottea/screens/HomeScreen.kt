@@ -55,6 +55,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.hottea.R
+import com.example.hottea.ViewModels.FriendsViewModel
 import com.example.hottea.ViewModels.UserViewModel
 import com.example.hottea.composables.ConverSationItem
 import com.example.hottea.composables.Input
@@ -85,7 +86,8 @@ fun HomeScreen(
     navToProfile: () -> Unit,
     navController: NavHostController = rememberNavController(),
     navToConversation: () -> Unit, viewModel: UserViewModel = viewModel(),
-    firestoreRepository: FirestoreRepository = FirestoreRepository()
+    firestoreRepository: FirestoreRepository = FirestoreRepository(),
+    friendsViewModel: FriendsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
     val user = remember (viewModel.profile){
         derivedStateOf {viewModel.profile }
@@ -99,6 +101,11 @@ fun HomeScreen(
         mutableStateOf(false)
     }
 
+
+
+            27.50
+
+
     fun changeValue (){
         searchBool.value = !searchBool.value
     }
@@ -107,13 +114,16 @@ fun HomeScreen(
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     val backStackEntry = navController.currentBackStackEntryAsState()
+
+    val friends = friendsViewModel.friends?.friends
+
+    Log.i("FRIENDSLIST", friends.toString())
     val TopNavItems = listOf(
         TopNavItem(
             name = "Conversations",
             route = "Conversations",
             icon = Icons.Default.Home
         ),
-
         TopNavItem(
             name = "Friends",
             route = "Friends",

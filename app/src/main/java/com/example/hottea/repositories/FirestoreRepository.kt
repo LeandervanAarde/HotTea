@@ -123,6 +123,19 @@ class FirestoreRepository {
             }
     }
 
+    suspend fun  getUserFriends(uid: String, onSuccess: (User?) -> Unit){
+        userRef.document(uid).get().addOnSuccessListener { document ->
+            if(document != null){
+                onSuccess.invoke(document.toObject(User::class.java))
+                Log.i("USER", "Get SUCCESS",)
+            }
+        }
+            .addOnFailureListener { exception ->
+                Log.i("USER", "Get failed with", exception)
+                onSuccess.invoke(null)
+            }.await()
+    }
+
 }
 
 
