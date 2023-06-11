@@ -40,7 +40,7 @@ import com.example.hottea.ui.theme.PrimaryLight
 import com.example.hottea.ui.theme.gradient
 
 @Composable
-fun ConverSationItem(modifier: Modifier= Modifier, navigate: () -> Unit){
+fun ConversationItem(modifier: Modifier= Modifier, navigate: () -> Unit, username: String, lastMessage: String){
     Column(
         modifier
             .fillMaxWidth()
@@ -52,7 +52,7 @@ fun ConverSationItem(modifier: Modifier= Modifier, navigate: () -> Unit){
            modifier
                .fillMaxWidth()
                .fillMaxHeight()
-               .clickable { navigate() }
+//               .clickable { navigate() }
                .padding(10.dp)
                .background(color = Primary), verticalAlignment = Alignment.CenterVertically) {
           Column(
@@ -73,7 +73,7 @@ fun ConverSationItem(modifier: Modifier= Modifier, navigate: () -> Unit){
                    .width(250.dp)
                    .fillMaxHeight()) {
 
-               Text(text = "Username goes here", fontSize = 13.sp, color = Color.White, fontWeight = FontWeight(700))
+               Text(text = username, fontSize = 13.sp, color = Color.White, fontWeight = FontWeight(700))
                Spacer(modifier = Modifier.size(5.dp))
                Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
 
@@ -89,7 +89,7 @@ fun ConverSationItem(modifier: Modifier= Modifier, navigate: () -> Unit){
 
                Spacer(modifier = Modifier.size(5.dp))
 
-               Text(text = "This is the last message that someone...", fontSize = 9.sp, color = Color.White)
+               Text(text = lastMessage, fontSize = 9.sp, color = Color.White)
                
            }
 
@@ -118,6 +118,6 @@ fun ConverSationItem(modifier: Modifier= Modifier, navigate: () -> Unit){
 @Composable
 fun PreviewLoginScreen(){
     HotTeaTheme {
-        ConverSationItem(navigate = {})
+        ConversationItem(navigate = {}, username = "", lastMessage = "")
     }
 }

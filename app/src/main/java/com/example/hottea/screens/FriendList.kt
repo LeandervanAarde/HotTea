@@ -17,11 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.hottea.ViewModels.FriendsViewModel
 import com.example.hottea.composables.FriendCard
 import com.example.hottea.ui.theme.Red
 
 @Composable
-fun FriendsList(modifier: Modifier = Modifier){
+fun FriendsList(modifier: Modifier = Modifier, friendsViewModel: FriendsViewModel = viewModel(), uid: String){
+    val friends = friendsViewModel.friends
     LazyVerticalGrid(
         columns = GridCells.Fixed(2),
         contentPadding = PaddingValues(12.dp),
@@ -29,8 +32,9 @@ fun FriendsList(modifier: Modifier = Modifier){
         horizontalArrangement = Arrangement.spacedBy(12.dp)
 
     ) {
-        items(5) { item ->
-            FriendCard()
+        items(friends.size) { index ->
+            val friend = friends[index]
+            FriendCard(name = friend?.username ?: "" , image = friend?.profileImage ?: " " , available = friend?.available ?: false, uid = uid , friendUid = friend?.id ?: " ")
         }
     }
 }

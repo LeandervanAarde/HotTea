@@ -9,32 +9,33 @@ import com.example.hottea.models.User
 import com.example.hottea.repositories.AuthRepository
 import com.example.hottea.repositories.FirestoreRepository
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.snapshots.SnapshotStateList
 
-class FriendsViewModel(private val firestoreRepository: FirestoreRepository = FirestoreRepository(), authRepository: AuthRepository = AuthRepository()) : ViewModel(){
+class FriendsViewModel(
+    private val firestoreRepository: FirestoreRepository = FirestoreRepository(),
+    authRepository: AuthRepository = AuthRepository()
+) : ViewModel() {
     private val FRIENDSDATA = mutableStateListOf<User?>()
-    val friends : com.example.hottea.models.User? get() = FRIENDSDATA.firstOrNull()
+    val friends: List<User?> get() = FRIENDSDATA.toList()
     val userId = authRepository.getUserId()
     private var isInitialized = false
-
-
 
     init {
         if (!isInitialized) {
             getListOfFriends()
             isInitialized = true
-            Log.d("FUCK SAKES", FRIENDSDATA.toString())
         }
     }
-
-
 
     private fun getListOfFriends() = viewModelScope.launch {
-        firestoreRepository.getUserFriends(userId) { data ->
-            data?.let {
-                FRIENDSDATA.clear()
-                FRIENDSDATA.addAll(listOf(it))
-            }
+        try {
+            val userFriends = firestoreRepository.getUserFriends(userId)
+            FRIENDSDATA.clear()
+            FRIENDSDATA.addAll(userFriends)
+
+        } catch (e: Exception) {
+
         }
     }
-
 }

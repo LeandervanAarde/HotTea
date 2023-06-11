@@ -1,5 +1,6 @@
 package com.example.hottea.composables
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -25,13 +26,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.hottea.R
+import com.example.hottea.repositories.FirestoreRepository
 import com.example.hottea.ui.theme.Blue
 import com.example.hottea.ui.theme.HotTeaTheme
 import com.example.hottea.ui.theme.Primary
 
 @Composable
-fun FriendCard(modifier: Modifier = Modifier){
+fun FriendCard(modifier: Modifier = Modifier, name: String, image: String,  available: Boolean, uid: String, friendUid: String, firestoreRepository: FirestoreRepository = FirestoreRepository()){
     Column(
         Modifier
             .background(color = Color.Transparent, shape = RoundedCornerShape(12.dp))
@@ -39,7 +42,7 @@ fun FriendCard(modifier: Modifier = Modifier){
             .padding(0.dp, 0.dp, 0.dp, 12.dp)
             ){
 
-        Image(painter = painterResource(id = R.drawable.tester), contentDescription = null,
+        AsyncImage(model = image, contentDescription = null,
             modifier
                 .fillMaxWidth()
                 .background(color = Primary, shape = RoundedCornerShape(12.dp))
@@ -49,17 +52,17 @@ fun FriendCard(modifier: Modifier = Modifier){
         )
 
         Column(modifier.padding(12.dp, 0.dp)) {
-            Text(text = "Leander van Aarde", color = Color.White, fontSize= 18.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(0.dp, 2.5.dp))
+            Text(text = name, color = Color.White, fontSize= 18.sp, fontWeight = FontWeight.Medium, modifier = Modifier.padding(0.dp, 2.5.dp))
 
             Row(modifier = Modifier.padding(0.dp, 2.5.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
                 Column(modifier = Modifier
                     .size(10.dp)
                     .clip(shape = CircleShape)
-                    .background(Color.Green)){
+                    .background(if(available) Color.Green else Color.Red)){
 
                 }
                 Spacer(modifier = Modifier.size(18.dp))
-                Text(text = "Available",   color = Color.Green, fontSize= 12.sp)
+                Text(text = if (available) "Available" else "Offline",   color = if(available) Color.Green else Color.Red, fontSize= 12.sp)
             }
 
             Row(
@@ -68,6 +71,9 @@ fun FriendCard(modifier: Modifier = Modifier){
                     .padding(0.dp, 3.dp), horizontalArrangement = Arrangement.Center) {
                 PrimaryButton(color = Blue, icon = ImageVector.vectorResource(id = R.drawable.ic_chat), text = "new Chat" ) {
 
+                    firestoreRepository.createNewConversation(uid, friendUid)
+                    Log.i("USERONE", uid)
+                    Log.i("USERONETWO", friendUid)
                 }
             }
         }

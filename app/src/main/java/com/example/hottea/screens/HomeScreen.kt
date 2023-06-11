@@ -6,6 +6,7 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +15,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -55,9 +59,11 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.hottea.R
+import com.example.hottea.ViewModels.ConversationsViewModel
 import com.example.hottea.ViewModels.FriendsViewModel
 import com.example.hottea.ViewModels.UserViewModel
-import com.example.hottea.composables.ConverSationItem
+import com.example.hottea.composables.ConversationItem
+import com.example.hottea.composables.FriendCard
 import com.example.hottea.composables.Input
 import com.example.hottea.composables.PrimaryButton
 import com.example.hottea.composables.ProfileHeader
@@ -87,7 +93,7 @@ fun HomeScreen(
     navController: NavHostController = rememberNavController(),
     navToConversation: () -> Unit, viewModel: UserViewModel = viewModel(),
     firestoreRepository: FirestoreRepository = FirestoreRepository(),
-    friendsViewModel: FriendsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    conversationsViewModel: ConversationsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
     val user = remember (viewModel.profile){
         derivedStateOf {viewModel.profile }
@@ -101,11 +107,6 @@ fun HomeScreen(
         mutableStateOf(false)
     }
 
-
-
-            27.50
-
-
     fun changeValue (){
         searchBool.value = !searchBool.value
     }
@@ -114,10 +115,11 @@ fun HomeScreen(
     val pagerState = rememberPagerState()
     val coroutineScope = rememberCoroutineScope()
     val backStackEntry = navController.currentBackStackEntryAsState()
+    val conversations = conversationsViewModel.conversations
 
-    val friends = friendsViewModel.friends?.friends
+    Log.d("CONVERSATIONS", conversations.toString())
 
-    Log.i("FRIENDSLIST", friends.toString())
+
     val TopNavItems = listOf(
         TopNavItem(
             name = "Conversations",
@@ -195,29 +197,17 @@ fun HomeScreen(
                                         .background(color = PrimaryLight)
                                 ) {
                                     Spacer(modifier = Modifier.size(83.dp))
-                                    Column(
-                                        Modifier
-                                            .fillMaxSize()
-                                            .verticalScroll(rememberScrollState())) {
-                                        ConverSationItem(){
-                                            navToConversation.invoke()
-                                        }
-                                        ConverSationItem(){
-//                                            navToConversation.invoke()
+                                    LazyColumn(
 
-                                            Log.i("TEST", "Navigate to conversation")
-                                        }
+                                        contentPadding = PaddingValues(0.dp),
+                                        verticalArrangement = Arrangement.spacedBy(0.dp),
 
-                                        ConverSationItem(){
-                                            navToConversation.invoke()
-                                        }
-
-                                        ConverSationItem(){
-                                            navToConversation.invoke()
-                                        }
-
-                                        ConverSationItem(){
-                                            navToConversation.invoke()
+                                    ) {
+                                        items(conversations.size) { index ->
+                                            val conversation = conversations[index]
+                                            val userTwoName = conversation!!.userTwo.username ?: "None"
+                                            val lastMessage = conversation!!.lastMessage ?: "no Messages..."
+                                            ConversationItem(username = userTwoName.toString(), lastMessage = if(lastMessage == "") "No messages..." else lastMessage, navigate = {navToConversation.invoke()})
                                         }
                                     }
                                 }
@@ -274,15 +264,16 @@ fun HomeScreen(
 
                                            PrimaryButton(color = Blue, icon = ImageVector.vectorResource(
                                                id = R.drawable.ic_add
-                                           ), text = "Add" ) {
+                                           ), text = "Add he" ) {
                                                 firestoreRepository.addFriend(searchText.value , user.value?.id.toString())
+//                                               Log.d("FRIEND", "HELL Yea Brother")
                                            }
                                        }
 
 
                                    }
 
-                                    FriendsList()
+                                    FriendsList(uid =user.value!!.id)
                                 }
                             }
                         }
