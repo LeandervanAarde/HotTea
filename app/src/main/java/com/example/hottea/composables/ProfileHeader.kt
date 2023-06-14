@@ -25,12 +25,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.hottea.R
 import com.example.hottea.ui.theme.Blue
 import com.example.hottea.ui.theme.PrimaryLight
 
 @Composable
-fun ProfileHeader(status: String, name: String){
+fun ProfileHeader(status: String, name: String, image: String){
     Row(modifier = Modifier
         .fillMaxWidth()
         .padding(10.dp)){
@@ -40,7 +41,7 @@ fun ProfileHeader(status: String, name: String){
             .clip(shape = CircleShape)
             .border(width = 4.dp, color = Blue, shape = CircleShape)){
 
-            Image(painter = painterResource(id = R.drawable.profileimage), contentDescription = null, contentScale = ContentScale.Crop)
+            AsyncImage(model = image, contentDescription = null, contentScale = ContentScale.Crop)
         }
         Spacer(modifier = Modifier.size(10.dp))
 

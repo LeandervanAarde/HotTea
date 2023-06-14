@@ -23,12 +23,12 @@ class ConversationsViewModel (private val firestoreRepository: FirestoreReposito
         }
     }
 
-
     private fun getListOfConversations() = viewModelScope.launch {
         try {
             val userConversation = firestoreRepository.getAllConversations(userId)
             CONVERSATIONSDATA.clear()
             CONVERSATIONSDATA.addAll(userConversation)
+            Log.i("CONVERSAT", conversations.toString())
         } catch (e: Exception) {
                 Log.d("ERR", e.localizedMessage)
         }

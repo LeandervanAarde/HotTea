@@ -30,7 +30,6 @@ fun FriendsList(modifier: Modifier = Modifier, friendsViewModel: FriendsViewMode
         contentPadding = PaddingValues(12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
         horizontalArrangement = Arrangement.spacedBy(12.dp)
-
     ) {
         items(friends.size) { index ->
             val friend = friends[index]

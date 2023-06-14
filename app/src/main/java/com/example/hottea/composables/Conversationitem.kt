@@ -40,84 +40,55 @@ import com.example.hottea.ui.theme.PrimaryLight
 import com.example.hottea.ui.theme.gradient
 
 @Composable
-fun ConversationItem(modifier: Modifier= Modifier, navigate: () -> Unit, username: String, lastMessage: String){
+fun ConversationItem(modifier: Modifier= Modifier, navigate: (String) -> Unit, username: String, lastMessage: String, id: String){
     Column(
         modifier
             .fillMaxWidth()
             .padding(10.dp, 7.dp)
-            .clickable { navigate }
+            .clickable { navigate(id)}
             .background(Primary, shape = RoundedCornerShape(20.dp))
             .height(88.dp)) {
        Row(
            modifier
                .fillMaxWidth()
                .fillMaxHeight()
-//               .clickable { navigate() }
+               .clickable { navigate(id) }
                .padding(10.dp)
                .background(color = Primary), verticalAlignment = Alignment.CenterVertically) {
           Column(
               modifier
                   .width(70.dp)
                   .height(70.dp)
-                  .background(Primary, shape = RoundedCornerShape(20.dp))) {
-              Image(painter = painterResource(id = R.drawable.profileimage), contentDescription = null,
+                  .background(Primary, shape = RoundedCornerShape(20.dp)),
+          horizontalAlignment = Alignment.CenterHorizontally) {
+              Image(painter = painterResource(id = R.drawable.logo), contentDescription = null,
                   modifier
                       .clip(shape = RoundedCornerShape(15.dp))
                       .height(70.dp))
           }
-           
            Spacer(modifier = modifier.size(6.dp))
-
            Column(
                modifier
                    .width(250.dp)
-                   .fillMaxHeight()) {
+                   .fillMaxHeight(),
+           verticalArrangement = Arrangement.Center) {
 
                Text(text = username, fontSize = 13.sp, color = Color.White, fontWeight = FontWeight(700))
-               Spacer(modifier = Modifier.size(5.dp))
-               Row(horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+               Spacer(modifier = Modifier.size(6.dp))
 
-                   Column(modifier = Modifier
-                       .size(9.dp)
-                       .clip(shape = CircleShape)
-                       .background(Color.Green)){
-
-                   }
-                   Spacer(modifier = Modifier.size(18.dp))
-                   Text(text = "Available",   color = Color.Green, fontSize= 9.sp)
-               }
-
-               Spacer(modifier = Modifier.size(5.dp))
 
                Text(text = lastMessage, fontSize = 9.sp, color = Color.White)
                
-           }
-
-           Column(
-               modifier
-                   .width(100.dp)
-                   .fillMaxHeight()
-                   .padding(5.dp), verticalArrangement = Arrangement.SpaceBetween, horizontalAlignment = Alignment.CenterHorizontally) {
-
-                Column(
-                    modifier
-                        .width(20.dp)
-                        .height(20.dp)
-                        .background(Blue, shape = CircleShape), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "10", fontSize = 9.sp, color = Color.White)
-                }
-//               Spacer(modifier = Modifier.size(12.dp))
-               Text(text = "12:36", fontSize = 9.sp, color = Color.White)
            }
        }
     }
 }
 
 
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewLoginScreen(){
-    HotTeaTheme {
-        ConversationItem(navigate = {}, username = "", lastMessage = "")
-    }
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun PreviewLoginScreen(){
+//    HotTeaTheme {
+//        ConversationItem(navigate = {}, username = "", lastMessage = "" id = "")
+//    }
+//}

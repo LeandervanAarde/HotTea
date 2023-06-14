@@ -7,10 +7,14 @@ import android.widget.Toast
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.ui.platform.LocalContext
 import com.example.hottea.models.Conversation
+import com.example.hottea.models.ConversationData
+import com.example.hottea.models.Message
 import com.example.hottea.models.User
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
@@ -23,6 +27,8 @@ import java.util.Objects
 //import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 const val USER_REF = "users"
+const val CONVO_REF = "conversations"
+
 
 class FirestoreRepository {
     val db = Firebase.firestore
@@ -31,6 +37,7 @@ class FirestoreRepository {
     val userId = AuthRepository()
     var storageRef = storage.reference
     var profileImageRef = storageRef.child("/profileImages")
+    val conversationRef = db.collection((CONVO_REF))
 
     fun createUserInDatabase(
         uid: String,
@@ -105,10 +112,10 @@ class FirestoreRepository {
 
 
     }
-
     fun addFriend(email: String, uid: String){
         // Get the user document with the specified email address.
         val user = db.collection(USER_REF).document(uid)
+        val friendDoc = db.collection(USER_REF).whereEqualTo("email", email)
         user
             .get()
             .addOnSuccessListener { document ->
@@ -153,85 +160,111 @@ class FirestoreRepository {
         return userList
     }
 
-    fun createNewConversation(userOne: String, userTwo: String, lastConversation: String = ""){
+    fun createNewConversation(userOne: String, userTwo: String, lastConversation: String = "") {
         val user = db.collection(USER_REF).document(userOne)
         val friend = db.collection(USER_REF).document(userTwo)
         val userObject = user.get()
         val friendObject = friend.get()
 
         Tasks.whenAllSuccess<DocumentSnapshot>(userObject, friendObject)
-            .addOnSuccessListener {( userObjectResult, friendObjectResult) ->
+            .addOnSuccessListener { (userObjectResult, friendObjectResult) ->
                 val userObject = userObjectResult.toObject(User::class.java)
                 val friendObject = friendObjectResult.toObject(User::class.java)
 
                 if (userObject != null && friendObject != null) {
-                    user.collection("conversations").document().set(
-                        Conversation(userObject, friendObject, lastConversation)
-                    )
-                        .addOnSuccessListener {
-                            Log.d("CHAT ONE", "TRUE")
-                        }
-                        .addOnFailureListener { e ->
-                            Log.d("CHAT ONE ", e.localizedMessage.toString())
-                        }
+                    var conversationData = ConversationData(userOne, userTwo, lastConversation)
 
-                    friend.collection("conversations").document().set(
-                        Conversation(friendObject, userObject, lastConversation)
-                    )
-                        .addOnSuccessListener {
-                            Log.d("FRIEND CHAT", "TRUE")
+
+                    conversationRef.add(conversationData)
+                        .addOnSuccessListener { conversationDocRef ->
+                            val conversationId = conversationDocRef.id
+                            conversationData.id = conversationId
+
+                            conversationDocRef.update("id", conversationId)
+
+                            Log.d("CHAT", "Conversation document created with ID: $conversationId")
+
+                            val messagesCollection = conversationRef
+                                .document(conversationId)
+                                .collection("messages")
+
+                            val messageData = Message("", Timestamp.now(), "")
+
+                            messagesCollection.add(messageData)
+                                .addOnSuccessListener {
+                                    Log.d("CHAT", "Message document created")
+                                }
+                                .addOnFailureListener { e ->
+                                    Log.d("CHAT", "Failed to create message document: ${e.localizedMessage}")
+                                }
                         }
                         .addOnFailureListener { e ->
-                            Log.d("FRIEND CHAT", e.localizedMessage.toString())
+                            Log.d("CHAT", "Failed to create conversation document: ${e.localizedMessage}")
                         }
-                } else {
-                    Log.d("CHATS", "CHATS ARE EMPTY")
                 }
             }
             .addOnFailureListener { e ->
-                Log.d("CHAT ONE", e.localizedMessage.toString())
+                Log.d("CHAT", "Failed to fetch user or friend object: ${e.localizedMessage}")
+                }
             }
-    }
 
-    suspend fun getUserConversations(uid: String): MutableList<Conversation> {
-        val conversationList = mutableStateListOf<Conversation>()
-        try {
-            val conversationSnapshot = db.collection("users").document(uid).collection("conversations").get().await()
-
-            for (document in conversationSnapshot.documents) {
-                val conversation = document.toObject(Conversation::class.java)
-                conversation?.let { conversationList.add(it) }
-            }
-        } catch (e: Exception) {
-            Log.d("ERROR", e.toString())
-        }
-        return conversationList
-    }
 
     suspend fun getAllConversations(uid: String): MutableList<Conversation> {
         val conversationList = mutableListOf<Conversation>()
         try {
-            val conversationSnapshot = db.collection("users").document(uid).collection("conversations").get().await()
-            for (document in conversationSnapshot.documents) {
-                val gson = Gson()
-                val userOneNameJson = gson.toJson(document.get("userOne"))
-                val userOne = gson.fromJson(userOneNameJson, User::class.java)
+            val query1 = db.collection("conversations").whereEqualTo("userOne", uid)
+            val query2 = db.collection("conversations").whereEqualTo("userTwo", uid)
 
-                val userTwoNameJson = gson.toJson(document.get("userTwo"))
-                val userTwo = gson.fromJson(userTwoNameJson, User::class.java)
+            val query1Task = query1.get()
+            val query2Task = query2.get()
 
-                val lastMessageJSON = gson.toJson(document.get("lastMessage"))
-                val lastMessage = gson.fromJson(lastMessageJSON, String::class.java)
+            val snapshotList = Tasks.whenAllSuccess<QuerySnapshot>(listOf(query1Task, query2Task)).await()
 
-                conversationList.add(Conversation(userOne, userTwo, lastMessage))
-                Log.d("userTwo", conversationList.toString())
+            for (docs in snapshotList) {
+                for (document in docs) {
+                    val userOneRef = db.collection("users").document(document.getString("userOne")!!).get().await()
+                    val userTwoRef = db.collection("users").document(document.getString("userTwo")!!).get().await()
+
+                    val userOne = userOneRef.toObject(User::class.java)!!
+                    val userTwo = userTwoRef.toObject(User::class.java)!!
+
+                    val gson = Gson()
+
+                    val lastMessageJSON = gson.toJson(document.get("lastMessage"))
+                    val lastMessage = gson.fromJson(lastMessageJSON, String::class.java)
+
+                    val idJSON = gson.toJson(document.get("id"))
+                    val id = gson.fromJson(idJSON, String::class.java)
+
+                    conversationList.add(Conversation(userOne, userTwo, lastMessage, id))
+                }
             }
+            Log.d("userTwoYAY", conversationList.toString())
         } catch (e: Exception) {
-            Log.d("ERROR", e.toString())
+            Log.d("userTwoYAY", e.toString())
         }
         return conversationList
     }
+    suspend fun addNewMessage(
+        msg: Message,
+        chatId: String,
+        onSuccess: (Boolean) -> Unit
+    ){
+        db.collection("conversations").document(chatId).collection("messages")
+            .add(msg)
+            .addOnSuccessListener {
+                Log.d("MSG Sent", it.id)
+                onSuccess.invoke(true)
+            }
+            .addOnFailureListener { e ->
+                Log.d("ERR", e.localizedMessage)
+                onSuccess.invoke(false)
+            }.await()
+    }
+
 }
+
+
 
 
 //arguments = listOf(navArgument("chatId") { type = NavType.StringType; defaultValue = "chat1234" })

@@ -2,9 +2,11 @@ package com.example.hottea
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 import com.example.hottea.models.AuthViewModel
 import com.example.hottea.screens.ChatScreen
 import com.example.hottea.screens.HomeScreen
@@ -62,7 +64,7 @@ fun Navigation(navController: NavHostController = rememberNavController(), AuthV
                         inclusive = true
                     }
                 }},
-                navToConversation = {navController.navigate(AppRoutes.Chat.name){
+                navToConversation = {navController.navigate("${AppRoutes.Chat.name}/${it}"){
                        launchSingleTop = true
                        popUpTo(AppRoutes.Home.name){
                            inclusive = true
@@ -71,13 +73,13 @@ fun Navigation(navController: NavHostController = rememberNavController(), AuthV
             )
         }
 
-        composable(route = AppRoutes.Chat.name){
+        composable(route = "${AppRoutes.Chat.name}/{chatId}", arguments = listOf(navArgument("chatId"){type = NavType.StringType; defaultValue = "chatOneTwoThree"})){
             ChatScreen(navBack = {navController.navigate(AppRoutes.Home.name){
                 launchSingleTop = true
                 popUpTo(AppRoutes.Chat.name){
                     inclusive = true
                 }
-            } })
+            } }, chatId = it.arguments?.getString("chatId"))
         }
 
         composable(route = AppRoutes.Profile.name){

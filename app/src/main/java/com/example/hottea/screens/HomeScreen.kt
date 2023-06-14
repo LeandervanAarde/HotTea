@@ -91,7 +91,7 @@ fun HomeScreen(
     repository: AuthRepository = AuthRepository(),
     navToProfile: () -> Unit,
     navController: NavHostController = rememberNavController(),
-    navToConversation: () -> Unit, viewModel: UserViewModel = viewModel(),
+    navToConversation: (chatId: String) -> Unit, viewModel: UserViewModel = viewModel(),
     firestoreRepository: FirestoreRepository = FirestoreRepository(),
     conversationsViewModel: ConversationsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
 ){
@@ -117,7 +117,7 @@ fun HomeScreen(
     val backStackEntry = navController.currentBackStackEntryAsState()
     val conversations = conversationsViewModel.conversations
 
-    Log.d("CONVERSATIONS", conversations.toString())
+    Log.d("CONVERSATIONS2", conversations.toString())
 
 
     val TopNavItems = listOf(
@@ -136,7 +136,7 @@ fun HomeScreen(
         .fillMaxSize()
         .background(gradient)) {
         Column {
-            ProfileHeader(status =if(user.value?.status == null)  "No status provided" else user.value?.status.toString() , name = user.value?.username.toString() )
+            ProfileHeader(status =if(user.value?.status == null)  "No status provided" else user.value?.status.toString() , name = user.value?.username.toString() , image = user.value?.profileImage.toString())
             Row(modifier = Modifier
                 .fillMaxWidth()
                 .padding(0.dp, 0.dp, 12.dp, 0.dp), horizontalArrangement = Arrangement.End) {
@@ -205,9 +205,11 @@ fun HomeScreen(
                                     ) {
                                         items(conversations.size) { index ->
                                             val conversation = conversations[index]
+                                            val userOneName = conversation!!.userOne.username ?: "None"
                                             val userTwoName = conversation!!.userTwo.username ?: "None"
                                             val lastMessage = conversation!!.lastMessage ?: "no Messages..."
-                                            ConversationItem(username = userTwoName.toString(), lastMessage = if(lastMessage == "") "No messages..." else lastMessage, navigate = {navToConversation.invoke()})
+                                            val chatId = conversation!!.id ?: "nothing"
+                                            ConversationItem(username = "${userTwoName} and ${userOneName} ", lastMessage = if(lastMessage == "") "No messages..." else lastMessage, navigate = {navToConversation(chatId)}, id = chatId)
                                         }
                                     }
                                 }

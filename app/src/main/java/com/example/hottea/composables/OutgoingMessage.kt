@@ -18,16 +18,26 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.example.hottea.R
 import com.example.hottea.ui.theme.Primary
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
-fun OutGoingMessage(text: String, modifier: Modifier = Modifier){
+fun OutGoingMessage(text: String, modifier: Modifier = Modifier, image: String, date: Timestamp){
+    fun readableDate(date: Timestamp): String {
+        val dateFormat = SimpleDateFormat("MMMM dd - hh:mm a", Locale.getDefault())
+        val dateMillis = date.toDate().time
+        return dateFormat.format(dateMillis)
+    }
     Row(
         modifier
             .fillMaxWidth()
             .padding(12.dp, 5.dp)){
-        Image(painter = painterResource(id = R.drawable.tester), contentDescription = null,
+        AsyncImage(model = image, contentDescription = null,
             modifier
                 .clip(
                     RoundedCornerShape(14.dp)
@@ -39,6 +49,9 @@ fun OutGoingMessage(text: String, modifier: Modifier = Modifier){
 
         Column(modifier.background(color = Primary, shape= RoundedCornerShape(12.dp)).padding(10.dp)) {
             Text(text = text, color = Color.White)
+            Spacer(modifier = modifier.size(5.dp))
+
+            Text(text = readableDate(date), color = Color.White, fontSize = 10.sp)
         }
     }
 }
