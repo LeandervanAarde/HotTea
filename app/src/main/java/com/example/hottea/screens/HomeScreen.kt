@@ -93,7 +93,8 @@ fun HomeScreen(
     navController: NavHostController = rememberNavController(),
     navToConversation: (chatId: String) -> Unit, viewModel: UserViewModel = viewModel(),
     firestoreRepository: FirestoreRepository = FirestoreRepository(),
-    conversationsViewModel: ConversationsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()
+    conversationsViewModel: ConversationsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
+    navToLogin: () -> Unit
 ){
     val user = remember (viewModel.profile){
         derivedStateOf {viewModel.profile }
@@ -109,6 +110,11 @@ fun HomeScreen(
 
     fun changeValue (){
         searchBool.value = !searchBool.value
+    }
+
+    fun logoutUser(){
+        repository.signOutUser()
+        navToLogin.invoke()
     }
 
     var status = user.value?.status.toString()
@@ -142,7 +148,7 @@ fun HomeScreen(
                 .padding(0.dp, 0.dp, 12.dp, 0.dp), horizontalArrangement = Arrangement.End) {
                 PrimaryButton(color = Blue, icon = Icons.Default.Person , text = "Profile" , onClick = {navToProfile.invoke()})
                 Spacer(modifier = Modifier.size(12.dp))
-                PrimaryButton(color = Red, icon = Icons.Default.ExitToApp , text = "LogOut" ,onClick = { repository.signOutUser()} )
+                PrimaryButton(color = Red, icon = Icons.Default.ExitToApp , text = "LogOut" ,onClick = { logoutUser() } )
             }
         }
         Spacer(modifier = Modifier.size(12.dp))
@@ -287,10 +293,10 @@ fun HomeScreen(
 
 
 
-@Preview(showSystemUi = true)
-@Composable
-fun PreviewHome(){
-    HotTeaTheme {
-        HomeScreen(authViewModel = AuthViewModel(), navToProfile = {}, navToConversation = {})
-    }
-}
+//@Preview(showSystemUi = true)
+//@Composable
+//fun PreviewHome(){
+//    HotTeaTheme {
+//        HomeScreen(authViewModel = AuthViewModel(), navToProfile = {}, navToConversation = {})
+//    }
+//}

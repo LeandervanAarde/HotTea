@@ -70,6 +70,16 @@ fun Navigation(navController: NavHostController = rememberNavController(), AuthV
                            inclusive = true
                        }
                    } },
+
+                navToLogin =
+                {
+                    navController.navigate(AuthenticationRoutes.Login.name) {
+                        launchSingleTop = true
+                        popUpTo(AppRoutes.Home.name) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
 

@@ -1,29 +1,21 @@
 package com.example.hottea.repositories
 
-import android.content.Context
 import android.net.Uri
 import android.util.Log
-import android.widget.Toast
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.ui.platform.LocalContext
 import com.example.hottea.models.Conversation
 import com.example.hottea.models.ConversationData
 import com.example.hottea.models.Message
 import com.example.hottea.models.User
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Timestamp
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
-import io.grpc.internal.JsonParser
 import kotlinx.coroutines.tasks.await
-import java.io.File
-import java.util.Objects
+
 //import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
 const val USER_REF = "users"
@@ -74,43 +66,35 @@ class FirestoreRepository {
         }.await()
     }
 
-     fun updateUserData(uid: String, username: String, status: String, newImage: String ){
-         var file = Uri.fromFile(File(newImage))
-         var newImageRef = storageRef.child("/profileImages/${file.lastPathSegment}")
-         var uploadTask = newImageRef.putFile(file)
+     suspend fun updateUserData(uid: String, username: String, status: String, newImage: Uri?){
+        var downloadUrl : String = ""
 
-//         uploadTask
-//             .addOnFailureListener { e ->
-//                 Log.w("IMAGEUPT", "Error updating document", e)
-//
-//             }
-//             .addOnSuccessListener {
-//                 val task = uploadTask.continueWithTask { task ->
-//                     if (!task.isSuccessful) {
-//                         task.exception?.let {
-//                             throw it
-//                         }
-//                     }
-//                     newImageRef.downloadUrl
-//                 }.addOnCompleteListener { task ->
-//                     if (task.isSuccessful) {
-//                         val downloadUri = task.result
-//                         userRef.document(uid)
-//                             .update("username", username, "status", status, "image" , downloadUri)
-//                             .addOnSuccessListener { Log.d("UPDATE", "DocumentSnapshot successfully updated!") }
-//                             .addOnFailureListener { e -> Log.w("UPDATE", "Error updating document", e) }
-//                     } else {
-//
-//                     }
-//                 }
-//             }
+        if(newImage != null){
+            uploadImage(newImage, username){
+                downloadUrl = it.toString()
+            }
+        }
+        userRef.document(uid)
+            .update("username", username, "status", status, "profileImage", downloadUrl?: "https://firebasestorage.googleapis.com/v0/b/hottea-44cd0.appspot.com/o/profileImage.jpg?alt=media&token=ea6a630a-3dd0-4762-9509-1c91c9fd16dc&_gl=1*iq0cin*_ga*MTg3MzQ4NjU1LjE2ODI4NDIwMTg.*_ga_CW55HF8NVT*MTY4NjM5Mzg4MC42My4xLjE2ODYzOTQwOTAuMC4wLjA.")
+            .addOnSuccessListener {
 
-         userRef.document(uid)
-             .update("username", username, "status", status)
-             .addOnSuccessListener { Log.d("UPDATE", "DocumentSnapshot successfully updated!") }
-             .addOnFailureListener { e -> Log.w("UPDATE", "Error updating document", e) }
+                Log.d("UPDATE", "DocumentSnapshot successfully updated!")
+            }
+            .addOnFailureListener { e -> Log.w("UPDATE", "Error updating document", e) }
+    }
 
-
+    suspend fun uploadImage(imageUri: Uri, fileName: String, onSuccess: (downloadUrl: String) -> Unit){
+        try {
+            val downloadUrl = storageRef.child("profiles/$fileName")
+                .putFile(imageUri).await()
+                .storage.downloadUrl.await()
+            onSuccess(downloadUrl.toString())
+        }
+        catch (e: java.lang.Exception){
+            Log.d("ERR", e.localizedMessage)
+            e.printStackTrace()
+            onSuccess("")
+        }
     }
     fun addFriend(email: String, uid: String){
         // Get the user document with the specified email address.
@@ -208,7 +192,6 @@ class FirestoreRepository {
                 }
             }
 
-
     suspend fun getAllConversations(uid: String): MutableList<Conversation> {
         val conversationList = mutableListOf<Conversation>()
         try {
@@ -261,7 +244,6 @@ class FirestoreRepository {
                 onSuccess.invoke(false)
             }.await()
     }
-
 }
 
 

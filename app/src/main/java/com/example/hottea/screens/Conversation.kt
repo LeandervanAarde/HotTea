@@ -96,8 +96,6 @@ fun ChatScreen(modifier: Modifier = Modifier, navBack: () -> Unit, chatId: Strin
         return dateFormat.format(date)
     }
 
-
-
     Column(
         modifier
             .fillMaxSize()

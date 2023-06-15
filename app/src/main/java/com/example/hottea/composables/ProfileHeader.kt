@@ -1,12 +1,17 @@
 package com.example.hottea.composables
 
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -36,12 +41,22 @@ fun ProfileHeader(status: String, name: String, image: String){
         .fillMaxWidth()
         .padding(10.dp)){
 
-        Column(modifier = Modifier
-            .size(120.dp)
-            .clip(shape = CircleShape)
-            .border(width = 4.dp, color = Blue, shape = CircleShape)){
-
-            AsyncImage(model = image, contentDescription = null, contentScale = ContentScale.Crop)
+        Box(
+            modifier = Modifier
+                .background(Blue, shape = CircleShape)
+                .size(120.dp)
+                .padding(2.dp)
+                .border(width = 2.dp, color = Blue, shape = CircleShape)
+        ) {
+            AsyncImage(
+                model = image,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape)
+                ,
+                contentDescription = null,
+                contentScale = ContentScale.Crop
+            )
         }
         Spacer(modifier = Modifier.size(10.dp))
 
