@@ -150,7 +150,6 @@ class FirestoreRepository {
         val userObject = user.get()
         val friendObject = friend.get()
 
-
         Tasks.whenAllSuccess<DocumentSnapshot>(userObject, friendObject)
             .addOnSuccessListener { (userObjectResult, friendObjectResult) ->
                 val userObject = userObjectResult.toObject(User::class.java)
@@ -160,6 +159,8 @@ class FirestoreRepository {
                     conversationRef
                         .whereEqualTo("userOne", userOne)
                         .whereEqualTo("userTwo", userTwo)
+                        .whereEqualTo("userTwo", userOne)
+                        .whereEqualTo("userOne", userTwo)
                         .get()
                         .addOnSuccessListener {
                             if(it.isEmpty){
@@ -191,7 +192,6 @@ class FirestoreRepository {
                                     .addOnFailureListener { e ->
                                         Log.d("CHAT", "Failed to create conversation document: ${e.localizedMessage}")
                                     }
-
                             } else {
                                 val existingConversation = it.documents.first()
                                 val conversationId = existingConversation.id
