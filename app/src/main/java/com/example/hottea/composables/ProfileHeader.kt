@@ -1,11 +1,8 @@
 package com.example.hottea.composables
 
-import androidx.activity.result.PickVisualMediaRequest
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -33,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.example.hottea.R
 import com.example.hottea.ui.theme.Blue
-import com.example.hottea.ui.theme.PrimaryLight
 
 @Composable
 fun ProfileHeader(status: String, name: String, image: String){
@@ -64,7 +60,7 @@ fun ProfileHeader(status: String, name: String, image: String){
             .fillMaxWidth()){
 
             Row(modifier = Modifier.padding(12.dp), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
-                Image(painter = painterResource(id = R.drawable.logo), contentDescription = null, contentScale = ContentScale.Fit, modifier = Modifier.size(30.dp) )
+                Image(painter = painterResource(id = R.drawable.ic_logo), contentDescription = null, contentScale = ContentScale.Fit, modifier = Modifier.size(30.dp) )
                 Spacer(modifier = Modifier.size(12.dp))
                 Text(text = name,   color = Color.White, fontSize= 18.sp, fontWeight = FontWeight.Medium)
             }

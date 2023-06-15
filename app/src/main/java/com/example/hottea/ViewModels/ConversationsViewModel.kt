@@ -22,7 +22,9 @@ class ConversationsViewModel (private val firestoreRepository: FirestoreReposito
             isInitialized = true
         }
     }
-
+    private fun updateConversations(conversation: Conversation) {
+        CONVERSATIONSDATA.add(conversation)
+    }
     private fun getListOfConversations() = viewModelScope.launch {
         try {
             val userConversation = firestoreRepository.getAllConversations(userId)
@@ -32,5 +34,9 @@ class ConversationsViewModel (private val firestoreRepository: FirestoreReposito
         } catch (e: Exception) {
                 Log.d("ERR", e.localizedMessage)
         }
+    }
+
+    fun getNewConversations(conversation: Conversation){
+        CONVERSATIONSDATA.add(conversation)
     }
 }

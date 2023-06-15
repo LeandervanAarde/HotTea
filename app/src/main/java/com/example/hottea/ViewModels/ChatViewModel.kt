@@ -42,7 +42,6 @@ class ChatViewModel (
     init {
         getUserInformation()
     }
-
     private fun getUserInformation() = viewModelScope.launch {
         repository.getUserData(userId){ data ->
             data?.let {
@@ -51,8 +50,6 @@ class ChatViewModel (
 
         }
     }
-
-
     fun sendNewMessage(body: String, chatId: String) = viewModelScope.launch {
         if(body.isNotBlank() && chatId.isNotBlank()){
 
@@ -69,9 +66,6 @@ class ChatViewModel (
             }
         }
     }
-
-
-
     fun getRealtimeMessages(chatId: String) {
         Log.d("AA start messages", chatId)
 

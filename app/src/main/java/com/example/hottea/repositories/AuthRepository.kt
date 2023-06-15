@@ -25,7 +25,6 @@ class AuthRepository {
             }
         }.await()
     }
-
     suspend fun loginUser (email: String, password: String,  isCompleted: (Boolean) -> Unit) = withContext(Dispatchers.IO){
         Firebase.auth.signInWithEmailAndPassword(email, password).addOnCompleteListener{
             if(it.isSuccessful){
@@ -35,7 +34,6 @@ class AuthRepository {
                 isCompleted.invoke(false)
             }
         }.await()
-
     }
 
     fun signOutUser(){

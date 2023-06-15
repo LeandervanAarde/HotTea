@@ -16,13 +16,10 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ExitToApp
@@ -37,9 +34,11 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -50,7 +49,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -60,10 +58,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.hottea.R
 import com.example.hottea.ViewModels.ConversationsViewModel
-import com.example.hottea.ViewModels.FriendsViewModel
 import com.example.hottea.ViewModels.UserViewModel
 import com.example.hottea.composables.ConversationItem
-import com.example.hottea.composables.FriendCard
 import com.example.hottea.composables.Input
 import com.example.hottea.composables.PrimaryButton
 import com.example.hottea.composables.ProfileHeader
@@ -72,7 +68,6 @@ import com.example.hottea.models.TopNavItem
 import com.example.hottea.repositories.AuthRepository
 import com.example.hottea.repositories.FirestoreRepository
 import com.example.hottea.ui.theme.Blue
-import com.example.hottea.ui.theme.HotTeaTheme
 import com.example.hottea.ui.theme.PrimaryLight
 import com.example.hottea.ui.theme.Red
 import com.example.hottea.ui.theme.gradient
@@ -84,14 +79,14 @@ import com.google.accompanist.pager.ExperimentalPagerApi
     ExperimentalMaterial3Api::class
 )
 @Composable
-
 fun HomeScreen(
     modifier: Modifier = Modifier,
     authViewModel: AuthViewModel,
     repository: AuthRepository = AuthRepository(),
     navToProfile: () -> Unit,
     navController: NavHostController = rememberNavController(),
-    navToConversation: (chatId: String) -> Unit, viewModel: UserViewModel = viewModel(),
+    navToConversation: (chatId: String) -> Unit,
+    viewModel: UserViewModel = viewModel(),
     firestoreRepository: FirestoreRepository = FirestoreRepository(),
     conversationsViewModel: ConversationsViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
     navToLogin: () -> Unit
@@ -99,6 +94,8 @@ fun HomeScreen(
     val user = remember (viewModel.profile){
         derivedStateOf {viewModel.profile }
     }
+
+    var remove by remember { mutableStateOf(false) }
 
     val searchText = remember {
         mutableStateOf("")
@@ -122,7 +119,6 @@ fun HomeScreen(
     val coroutineScope = rememberCoroutineScope()
     val backStackEntry = navController.currentBackStackEntryAsState()
     val conversations = conversationsViewModel.conversations
-
     Log.d("CONVERSATIONS2", conversations.toString())
 
 
@@ -177,7 +173,6 @@ fun HomeScreen(
                                         color = Color.White
                                     )
                                 },
-
                                 icon = {
                                     Icon(
                                         imageVector = item.icon,
@@ -204,18 +199,21 @@ fun HomeScreen(
                                 ) {
                                     Spacer(modifier = Modifier.size(83.dp))
                                     LazyColumn(
-
                                         contentPadding = PaddingValues(0.dp),
                                         verticalArrangement = Arrangement.spacedBy(0.dp),
-
                                     ) {
-                                        items(conversations.size) { index ->
-                                            val conversation = conversations[index]
-                                            val userOneName = conversation!!.userOne.username ?: "None"
-                                            val userTwoName = conversation!!.userTwo.username ?: "None"
-                                            val lastMessage = conversation!!.lastMessage ?: "no Messages..."
-                                            val chatId = conversation!!.id ?: "nothing"
-                                            ConversationItem(username = "${userTwoName} and ${userOneName} ", lastMessage = if(lastMessage == "") "No messages..." else lastMessage, navigate = {navToConversation(chatId)}, id = chatId)
+                                        items(conversations) { convo ->
+                                            val userOneName = convo!!.userOne.username ?: "None"
+                                            val userTwoName = convo!!.userTwo.username ?: "None"
+                                            val lastMessage = convo!!.lastMessage ?: "no Messages..."
+                                            val chatId = convo!!.id ?: "nothing"
+                                            val displayName = if( user.value?.username.toString() ==  convo!!.userOne.username){
+                                                convo!!.userTwo.username
+                                            } else{
+                                                convo!!.userOne.username
+                                            }
+                                            Log.d("USERNAMES", "${ userOneName}, ${user.value?.username.toString()}")
+                                            ConversationItem(username = displayName, lastMessage = if(lastMessage == "") "No messages..." else lastMessage, navigate = {navToConversation(chatId)}, id = chatId)
                                         }
                                     }
                                 }
@@ -252,10 +250,10 @@ fun HomeScreen(
 
                                            PrimaryButton(
                                                color = Red,
-                                               icon = ImageVector.vectorResource(id = R.drawable.ic_remove),
-                                               text = "Remove Friend"
+                                               icon = ImageVector.vectorResource(id = if(remove) R.drawable.ic_cancel else R.drawable.ic_remove),
+                                               text = if(remove) "Cancel" else "Remove Friend"
                                            ) {
-                                               Log.i("Removing friend", "Yes sir")
+                                               remove = !remove
                                            }
                                        } else {
                                            Column(Modifier.width(250.dp)) {
@@ -281,7 +279,7 @@ fun HomeScreen(
 
                                    }
 
-                                    FriendsList(uid =user.value!!.id)
+                                    FriendsList(uid =user.value!!.id, navToConversation = navToConversation, remove = remove)
                                 }
                             }
                         }

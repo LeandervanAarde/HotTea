@@ -75,8 +75,6 @@ fun ProfileScreen(modifier: Modifier = Modifier, repository: FirestoreRepository
         mutableStateOf<Uri?>(null)
     }
 
-    Log.d("FUCK SAKES", user?.id.toString() ?: "Image URI is null")
-
     val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia(),
         onResult = { uri -> selectedImageUri = uri }

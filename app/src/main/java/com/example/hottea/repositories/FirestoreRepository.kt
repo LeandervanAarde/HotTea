@@ -144,11 +144,12 @@ class FirestoreRepository {
         return userList
     }
 
-    fun createNewConversation(userOne: String, userTwo: String, lastConversation: String = "") {
+    fun createNewConversation(userOne: String, userTwo: String, lastConversation: String = "", navToConversation: (chatId: String) -> Unit) {
         val user = db.collection(USER_REF).document(userOne)
         val friend = db.collection(USER_REF).document(userTwo)
         val userObject = user.get()
         val friendObject = friend.get()
+
 
         Tasks.whenAllSuccess<DocumentSnapshot>(userObject, friendObject)
             .addOnSuccessListener { (userObjectResult, friendObjectResult) ->
@@ -156,34 +157,50 @@ class FirestoreRepository {
                 val friendObject = friendObjectResult.toObject(User::class.java)
 
                 if (userObject != null && friendObject != null) {
-                    var conversationData = ConversationData(userOne, userTwo, lastConversation)
+                    conversationRef
+                        .whereEqualTo("userOne", userOne)
+                        .whereEqualTo("userTwo", userTwo)
+                        .get()
+                        .addOnSuccessListener {
+                            if(it.isEmpty){
+                                var conversationData = ConversationData(userOne, userTwo, lastConversation)
+                                conversationRef.add(conversationData)
+                                    .addOnSuccessListener { conversationDocRef ->
+                                        val conversationId = conversationDocRef.id
+                                        conversationData.id = conversationId
 
+                                        conversationDocRef.update("id", conversationId)
 
-                    conversationRef.add(conversationData)
-                        .addOnSuccessListener { conversationDocRef ->
-                            val conversationId = conversationDocRef.id
-                            conversationData.id = conversationId
+                                        Log.d("CHAT", "Conversation document created with ID: $conversationId")
 
-                            conversationDocRef.update("id", conversationId)
+                                        val messagesCollection = conversationRef
+                                            .document(conversationId)
+                                            .collection("messages")
 
-                            Log.d("CHAT", "Conversation document created with ID: $conversationId")
+                                        val messageData = Message("", Timestamp.now(), "")
 
-                            val messagesCollection = conversationRef
-                                .document(conversationId)
-                                .collection("messages")
+                                        messagesCollection.add(messageData)
+                                            .addOnSuccessListener {
+                                                Log.d("CHAT", "Message document created")
+                                                navToConversation(conversationId)
+                                            }
+                                            .addOnFailureListener { e ->
+                                                Log.d("CHAT", "Failed to create message document: ${e.localizedMessage}")
+                                            }
+                                    }
+                                    .addOnFailureListener { e ->
+                                        Log.d("CHAT", "Failed to create conversation document: ${e.localizedMessage}")
+                                    }
 
-                            val messageData = Message("", Timestamp.now(), "")
+                            } else {
+                                val existingConversation = it.documents.first()
+                                val conversationId = existingConversation.id
+                                navToConversation(conversationId)
+                            }
 
-                            messagesCollection.add(messageData)
-                                .addOnSuccessListener {
-                                    Log.d("CHAT", "Message document created")
-                                }
-                                .addOnFailureListener { e ->
-                                    Log.d("CHAT", "Failed to create message document: ${e.localizedMessage}")
-                                }
                         }
-                        .addOnFailureListener { e ->
-                            Log.d("CHAT", "Failed to create conversation document: ${e.localizedMessage}")
+                        .addOnFailureListener {
+                            Log.d("ERR", it.localizedMessage)
                         }
                 }
             }
@@ -191,6 +208,8 @@ class FirestoreRepository {
                 Log.d("CHAT", "Failed to fetch user or friend object: ${e.localizedMessage}")
                 }
             }
+
+
 
     suspend fun getAllConversations(uid: String): MutableList<Conversation> {
         val conversationList = mutableListOf<Conversation>()
@@ -238,6 +257,9 @@ class FirestoreRepository {
             .addOnSuccessListener {
                 Log.d("MSG Sent", it.id)
                 onSuccess.invoke(true)
+
+                db.collection("conversations").document(chatId)
+                    .update("lastMessage", msg.message)
             }
             .addOnFailureListener { e ->
                 Log.d("ERR", e.localizedMessage)
