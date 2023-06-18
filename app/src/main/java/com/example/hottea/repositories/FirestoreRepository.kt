@@ -6,15 +6,20 @@ import com.example.hottea.models.Conversation
 import com.example.hottea.models.ConversationData
 import com.example.hottea.models.Message
 import com.example.hottea.models.User
+import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.Timestamp
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.QuerySnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import com.google.gson.Gson
 import kotlinx.coroutines.tasks.await
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
 //import kotlin.coroutines.jvm.internal.CompletedContinuation.context
 
@@ -30,7 +35,7 @@ class FirestoreRepository {
     var storageRef = storage.reference
     var profileImageRef = storageRef.child("/profileImages")
     val conversationRef = db.collection((CONVO_REF))
-
+    var conversationListener : ListenerRegistration? = null
     fun createUserInDatabase(
         uid: String,
         name: String,
@@ -159,8 +164,6 @@ class FirestoreRepository {
                     conversationRef
                         .whereEqualTo("userOne", userOne)
                         .whereEqualTo("userTwo", userTwo)
-                        .whereEqualTo("userTwo", userOne)
-                        .whereEqualTo("userOne", userTwo)
                         .get()
                         .addOnSuccessListener {
                             if(it.isEmpty){
@@ -201,7 +204,7 @@ class FirestoreRepository {
                         }
                         .addOnFailureListener {
                             Log.d("ERR", it.localizedMessage)
-                        }
+                    }
                 }
             }
             .addOnFailureListener { e ->
@@ -222,6 +225,7 @@ class FirestoreRepository {
 
             val snapshotList = Tasks.whenAllSuccess<QuerySnapshot>(listOf(query1Task, query2Task)).await()
 
+
             for (docs in snapshotList) {
                 for (document in docs) {
                     val userOneRef = db.collection("users").document(document.getString("userOne")!!).get().await()
@@ -239,8 +243,11 @@ class FirestoreRepository {
                     val id = gson.fromJson(idJSON, String::class.java)
 
                     conversationList.add(Conversation(userOne, userTwo, lastMessage, id))
+
                 }
+
             }
+
             Log.d("userTwoYAY", conversationList.toString())
         } catch (e: Exception) {
             Log.d("userTwoYAY", e.toString())
@@ -265,6 +272,13 @@ class FirestoreRepository {
                 Log.d("ERR", e.localizedMessage)
                 onSuccess.invoke(false)
             }.await()
+    }
+
+
+    suspend fun deleteAccount(uid: String, navToRegister: () -> Unit){
+        userRef.document(uid).delete().await()
+        Firebase.auth.currentUser?.delete()
+        navToRegister()
     }
 }
 

@@ -1,6 +1,11 @@
 package com.example.hottea
 
+import android.os.Build
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -31,8 +36,15 @@ fun Navigation(navController: NavHostController = rememberNavController(), AuthV
     } else {
         AuthenticationRoutes.Login.name
     }
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = {
+            Log.d("notification request", it.toString())
+        }
+    )
 
     NavHost(navController = navController, startDestination = initialRoute){
+
         composable(route = AuthenticationRoutes.Login.name){
     LoginScreen(
         navigateToRegister = {
@@ -92,13 +104,25 @@ fun Navigation(navController: NavHostController = rememberNavController(), AuthV
             } }, chatId = it.arguments?.getString("chatId"))
         }
 
-        composable(route = AppRoutes.Profile.name){
-            ProfileScreen(navBack = {navController.navigate(AppRoutes.Home.name){
-                launchSingleTop = true
-                popUpTo(AppRoutes.Profile.name){
-                    inclusive = true
+        composable(route = AppRoutes.Profile.name) {
+            ProfileScreen(
+                navBack = {
+                    navController.navigate(AppRoutes.Home.name) {
+                        launchSingleTop = true
+                        popUpTo(AppRoutes.Home.name) {
+                            inclusive = true
+                        }
+                    }
+                },
+                navToRegister = {
+                        navController.navigate(AuthenticationRoutes.Login.name) {
+                            launchSingleTop = true
+                            popUpTo(AuthenticationRoutes.Login.name) {
+                                inclusive = true
+                            }
+                        }
                 }
-            } })
+            )
         }
 
         composable(route = AuthenticationRoutes.Register.name){
@@ -118,5 +142,12 @@ fun Navigation(navController: NavHostController = rememberNavController(), AuthV
         }
 
 
+    }
+
+    LaunchedEffect(key1 = permissionLauncher){
+        Log.d("permission request", "Ye buddy")
+        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+        }
     }
 }

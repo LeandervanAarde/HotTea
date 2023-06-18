@@ -10,6 +10,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -63,7 +64,13 @@ import com.example.hottea.ui.theme.Yellow
 import kotlinx.coroutines.launch
 
 @Composable
-fun ProfileScreen(modifier: Modifier = Modifier, repository: FirestoreRepository = FirestoreRepository(), authRepository: AuthRepository = AuthRepository(), viewModel: UserViewModel = viewModel(), navBack: () -> Unit){
+fun ProfileScreen(modifier: Modifier = Modifier,
+                  repository: FirestoreRepository = FirestoreRepository(),
+                  authRepository: AuthRepository = AuthRepository(),
+                  viewModel: UserViewModel = viewModel(),
+                  navBack: () -> Unit,
+                  navToRegister : () -> Unit
+){
     var mode by remember { mutableStateOf("dark") }
     val user by remember(viewModel.profile) {
         derivedStateOf { viewModel.profile }
@@ -188,6 +195,20 @@ fun ProfileScreen(modifier: Modifier = Modifier, repository: FirestoreRepository
                     }
                 }
 
+                Column(modifier = modifier.fillMaxWidth()) {
+                    Text(
+                        text =  "Email registered to this account : ",
+                        color = Color.White,
+                        fontSize = 12.sp
+                    )
+
+                    Text(
+                        text = user?.email.toString(),
+                        color = Blue,
+                        fontSize = 12.sp
+                    )
+                }
+
                 Input(
                     textValue = usernameInput,
                     changedVal = {newText -> usernameInput = newText} ,
@@ -228,16 +249,16 @@ fun ProfileScreen(modifier: Modifier = Modifier, repository: FirestoreRepository
                         }
                     }
                 }
-
-                Text(text = "Danger Zone", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight(700))
-
-                Column(modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
-                    PrimaryButton(color = Color.Red, icon = ImageVector.vectorResource(
-                        id = R.drawable.ic_remove
-                    ), text = "Delete my account" ) {
-                        Log.i("Adding friend", "YEs sir")
-                    }
-                }
+//
+//                Text(text = "Danger Zone", color = Color.White, fontSize = 20.sp, fontWeight = FontWeight(700))
+//
+//                Column(modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
+//                    PrimaryButton(color = Color.Red, icon = ImageVector.vectorResource(
+//                        id = R.drawable.ic_remove
+//                    ), text = "Delete my account" ) {
+//                        viewModel.removeUser({ navToRegister.invoke()})
+//                    }
+//                }
             }
         }
     }
@@ -247,6 +268,6 @@ fun ProfileScreen(modifier: Modifier = Modifier, repository: FirestoreRepository
 @Composable
 fun previewProfileScreen(){
     HotTeaTheme {
-        ProfileScreen(navBack = {})
+        ProfileScreen(navBack = {}, navToRegister = {})
     }
 }

@@ -159,6 +159,8 @@ fun ChatScreen(modifier: Modifier = Modifier, navBack: () -> Unit, chatId: Strin
 
                 items(messages){ message ->
                    if(chatViewModel.userId == message.userId){
+                       Log.d("USERONE", chatViewModel.userId)
+                       Log.d("USERONE2", message.userId)
 
                        OutGoingMessage(text = message.message, image = currUserOb?.profileImage.toString(), date = message.time)
                    } else{

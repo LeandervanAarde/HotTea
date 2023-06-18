@@ -7,6 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.example.hottea.models.Conversation
 import com.example.hottea.repositories.AuthRepository
 import com.example.hottea.repositories.FirestoreRepository
+import com.google.firebase.firestore.ListenerRegistration
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -16,6 +17,7 @@ class ConversationsViewModel (private val firestoreRepository: FirestoreReposito
    val conversations: List<Conversation?> get() = CONVERSATIONSDATA.toList()
    val userId = authRepository.getUserId()
    private var isInitialized = false
+
     init {
         if (!isInitialized) {
             getListOfConversations()
@@ -31,12 +33,9 @@ class ConversationsViewModel (private val firestoreRepository: FirestoreReposito
             CONVERSATIONSDATA.clear()
             CONVERSATIONSDATA.addAll(userConversation)
             Log.i("CONVERSAT", conversations.toString())
-        } catch (e: Exception) {
-                Log.d("ERR", e.localizedMessage)
-        }
-    }
 
-    fun getNewConversations(conversation: Conversation){
-        CONVERSATIONSDATA.add(conversation)
+        } catch (e: Exception) {
+            Log.d("ERR", e.localizedMessage)
+        }
     }
 }

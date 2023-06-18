@@ -1,5 +1,6 @@
 package com.example.hottea
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -16,6 +17,7 @@ import com.example.hottea.models.AuthViewModel
 import com.example.hottea.screens.HomeScreen
 import com.example.hottea.screens.LoginScreen
 import com.example.hottea.screens.RegisterScreen
+import com.example.hottea.services.BackgroundService
 import com.example.hottea.ui.theme.HotTeaTheme
 import com.google.firebase.FirebaseApp
 import com.google.firebase.storage.FirebaseStorage
@@ -36,6 +38,7 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        startService(Intent(this, BackgroundService::class.java))
     }
 }
 

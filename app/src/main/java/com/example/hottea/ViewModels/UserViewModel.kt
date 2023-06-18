@@ -45,6 +45,12 @@ class UserViewModel(private val firestoreRepository: FirestoreRepository = Fires
         }
     }
 
+    fun removeUser(navToRegister: () -> Unit) = viewModelScope.launch {
+        firestoreRepository.deleteAccount(userId){
+            navToRegister()
+        }
+    }
+
 }
 
 

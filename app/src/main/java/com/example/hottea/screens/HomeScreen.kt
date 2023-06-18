@@ -50,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -237,23 +238,25 @@ fun HomeScreen(
                                    Row(
                                        Modifier
                                            .fillMaxWidth()
-                                           .padding(12.dp), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+                                           .padding(12.dp), Arrangement.Start, Alignment.CenterVertically) {
 
                                        if (!searchBool.value) {
+
+
+//                                           PrimaryButton(
+//                                               color = Red,
+//                                               icon = ImageVector.vectorResource(id = if(remove) R.drawable.ic_cancel else R.drawable.ic_remove),
+//                                               text = if(remove) "Cancel" else "Remove Friend"
+//                                           ) {
+//                                               remove = !remove
+//                                           }
+
                                            PrimaryButton(
                                                color = Blue,
                                                icon = ImageVector.vectorResource(id = R.drawable.ic_add),
                                                text = "Add Friend"
                                            ) {
-                                             changeValue()
-                                           }
-
-                                           PrimaryButton(
-                                               color = Red,
-                                               icon = ImageVector.vectorResource(id = if(remove) R.drawable.ic_cancel else R.drawable.ic_remove),
-                                               text = if(remove) "Cancel" else "Remove Friend"
-                                           ) {
-                                               remove = !remove
+                                               changeValue()
                                            }
                                        } else {
                                            Column(Modifier.width(250.dp)) {
@@ -267,12 +270,12 @@ fun HomeScreen(
                                                )
                                            }
 
+                                           Spacer(modifier = modifier.size(35.dp))
 
                                            PrimaryButton(color = Blue, icon = ImageVector.vectorResource(
                                                id = R.drawable.ic_add
-                                           ), text = "Add he" ) {
+                                           ), text = "Add" ) {
                                                 firestoreRepository.addFriend(searchText.value , user.value?.id.toString())
-//                                               Log.d("FRIEND", "HELL Yea Brother")
                                            }
                                        }
 

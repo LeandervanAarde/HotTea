@@ -40,6 +40,7 @@ import com.example.hottea.composables.Input
 import com.example.hottea.composables.PrimaryButton
 import com.example.hottea.R
 import com.example.hottea.models.AuthViewModel
+import com.example.hottea.services.MyNotification
 import com.example.hottea.ui.theme.Blue
 import com.example.hottea.ui.theme.Green
 import com.example.hottea.ui.theme.HotTeaTheme
@@ -98,6 +99,7 @@ fun LoginScreen (authViewModel: AuthViewModel, modifier: Modifier = Modifier, na
 
             PrimaryButton(color = Blue, icon = Icons.Default.Person, text = "Log in") {
                 authViewModel?.signInUser(context)
+
             }
 
             Spacer(modifier = Modifier.size(30.dp))
